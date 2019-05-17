@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.system.dao.EmployeeMapper">
+
+	<resultMap id="BaseResultMap" type="com.icss.oa.system.pojo.Employee">
+		<id column="emp_id" property="empId" jdbcType="INTEGER" />
+		<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		<result column="emp_login_name" property="empLoginName"
+			jdbcType="VARCHAR" />
+		<result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
+		<result column="emp_sex" property="empSex" jdbcType="VARCHAR" />
+		<result column="emp_birthdate" property="empBirthdate"
+			jdbcType="DATE" />
+		<result column="emp_phone" property="empPhone" jdbcType="VARCHAR" />
+		<result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
+		<result column="emp_sal" property="empSal" jdbcType="INTEGER" />
+		<result column="emp_info" property="empInfo" jdbcType="VARCHAR" />
+		<!-- 多对一关系映射，必须写在resultMap最后面 -->
+		<association property="dept" javaType="com.icss.oa.system.pojo.Department">
+			<id column="dept_id" property="deptId" jdbcType="INTEGER" />
+			<result column="dept_name" property="deptName" jdbcType="VARCHAR" />
+			<result column="dept_info" property="deptInfo" jdbcType="VARCHAR" />
+		</association>
+		<association property="job" javaType="com.icss.oa.system.pojo.Job">
+			<id column="job_id" property="jobId" jdbcType="INTEGER" />
+			<result column="job_name" property="jobName" jdbcType="VARCHAR" />
+			<result column="job_min_sal" property="jobMinSal" jdbcType="INTEGER" />
+			<result column="job_max_sal" property="jobMaxSal" jdbcType="INTEGER" />
+		</association>
+	</resultMap>
+
+	<resultMap id="ResultMapWithBLOBs" type="com.icss.oa.system.pojo.Employee"
+		extends="BaseResultMap">
+		<result column="emp_photo" property="empPhoto" jdbcType="LONGVARCHAR" />
+	</resultMap>
+
+	<insert id="insert" parameterType="com.icss.oa.system.pojo.Employee">
+		insert into employee (emp_id, emp_name, emp_login_name,
+		emp_pwd, emp_sex, emp_birthdate,
+		emp_phone, emp_email, emp_sal,
+		emp_info, emp_dept_id, emp_job_id,
+		emp_photo)
+		values (default, #{empName,jdbcType=VARCHAR},
+		#{empLoginName,jdbcType=VARCHAR},
+		#{empPwd,jdbcType=VARCHAR}, #{empSex,jdbcType=VARCHAR}, #{empBirthdate,jdbcType=DATE},
+		#{empPhone,jdbcType=VARCHAR}, #{empEmail,jdbcType=VARCHAR},
+		#{empSal,jdbcType=INTEGER},
+		#{empInfo,jdbcType=VARCHAR}, #{dept.deptId,jdbcType=INTEGER}, #{job.jobId,jdbcType=INTEGER},
+		#{empPhoto,jdbcType=LONGVARCHAR})
+	</insert>
+	
+	<select id="queryByPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		SELECT 	 e.`emp_id`,e.`emp_name`,d.`dept_name`,j.`job_name`,e.`emp_phone`
+		FROM     employee e 
+		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id` 
+		LIMIT #{start},#{pageSize}
+	</select>
+	
+	<select id="queryByPage2" resultMap="BaseResultMap">
+		SELECT 	 e.`emp_id`,e.`emp_name`,d.`dept_name`,j.`job_name`,e.`emp_phone`
+		FROM     employee e 
+		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id` 
+		LIMIT #{start},#{pageSize}
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from employee
+	</select>
+	
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT e.*,e.`emp_dept_id` dept_id,e.`emp_job_id` job_id FROM employee e
+		WHERE emp_id=#{empId}
+	</select>
+
+	<select id="queryByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select *
+		from	employee
+		where	emp_login_name=#{empLoginName}
+	</select>
+	
+	<select id="queryByCondition" resultMap="BaseResultMap">
+		SELECT 	 e.`emp_id`,e.`emp_name`,d.`dept_name`,j.`job_name`,e.`emp_phone`
+		FROM     employee e 
+		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`
+		<where>
+			<if test="deptId != null">
+				and emp_dept_id=#{deptId,jdbcType=INTEGER}
+			</if>
+			<if test="jobId != null">
+				and emp_job_id=#{jobId,jdbcType=INTEGER}
+			</if>
+			<if test="empName != null and empName != '' ">
+				and emp_name=#{empName,jdbcType=VARCHAR}
+			</if>
+		</where>
+		LIMIT #{start},#{pageSize}				
+	</select>
+	
+	<select id="getCountByCondition" resultType="java.lang.Integer">
+		select count(*) from employee
+		<where>
+			<if test="deptId != null">
+				and emp_dept_id=#{deptId,jdbcType=INTEGER}
+			</if>
+			<if test="jobId != null">
+				and emp_job_id=#{jobId,jdbcType=INTEGER}
+			</if>
+			<if test="empName != null and empName != '' ">
+				and emp_name=#{empName,jdbcType=VARCHAR}
+			</if>
+		</where>
+	</select>
+	
+</mapper>
