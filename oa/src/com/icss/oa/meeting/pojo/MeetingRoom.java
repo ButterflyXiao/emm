@@ -3,7 +3,7 @@ package com.icss.oa.meeting.pojo;
 public class MeetingRoom {
 	private Integer roomId;
 	private String roomPlace;
-	private Boolean IsReservation;
+	private Boolean isReservation;
 	private Integer roomSize;
 	private Boolean hasAirConditoning;
 	public Integer getRoomId() {
@@ -19,10 +19,10 @@ public class MeetingRoom {
 		this.roomPlace = roomPlace;
 	}
 	public Boolean getIsReservation() {
-		return IsReservation;
+		return isReservation;
 	}
 	public void setIsReservation(Boolean isReservation) {
-		IsReservation = isReservation;
+		this.isReservation = isReservation;
 	}
 	public Integer getRoomSize() {
 		return roomSize;
@@ -41,7 +41,15 @@ public class MeetingRoom {
 		super();
 		this.roomId = roomId;
 		this.roomPlace = roomPlace;
-		IsReservation = isReservation;
+		this.isReservation = isReservation;
+		this.roomSize = roomSize;
+		this.hasAirConditoning = hasAirConditoning;
+	}
+	public MeetingRoom( String roomPlace, Boolean isReservation, Integer roomSize,
+			Boolean hasAirConditoning) {
+		super();
+		this.roomPlace = roomPlace;
+		this.isReservation = isReservation;
 		this.roomSize = roomSize;
 		this.hasAirConditoning = hasAirConditoning;
 	}
@@ -50,7 +58,7 @@ public class MeetingRoom {
 	}
 	@Override
 	public String toString() {
-		return "MeetingRoom [roomId=" + roomId + ", roomPlace=" + roomPlace + ", IsReservation=" + IsReservation
+		return "MeetingRoom [roomId=" + roomId + ", roomPlace=" + roomPlace + ", IsReservation=" + isReservation
 				+ ", roomSize=" + roomSize + ", hasAirConditoning=" + hasAirConditoning + "]";
 	}
 }

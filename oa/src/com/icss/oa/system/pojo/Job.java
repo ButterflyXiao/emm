@@ -48,7 +48,7 @@ public class Job {
 	}
 
 	public void setJobName(String jobName) {
-		this.jobName = jobName;
+		this.jobName = jobName == null ? null : jobName.trim();
 	}
 
 	public Integer getJobMinSal() {
@@ -72,5 +72,5 @@ public class Job {
 		return "Job [jobId=" + jobId + ", jobName=" + jobName + ", jobMinSal=" + jobMinSal + ", jobMaxSal=" + jobMaxSal
 				+ "]";
 	}
-	
+		
 }

@@ -59,6 +59,12 @@ public class Meeting {
 		return "Meeting [meeId=" + meeId + ", meeTopic=" + meeTopic + ", meeApprovalStatus=" + meeApprovalStatus
 				+ ", meeRecord=" + meeRecord + ", meetingRoom=" + meetingRoom + ", employee=" + employee + "]";
 	}
+	public Integer getMeeId() {
+		return meeId;
+	}
+	public void setMeeId(Integer meeId) {
+		this.meeId = meeId;
+	}
 	
 	
 }
