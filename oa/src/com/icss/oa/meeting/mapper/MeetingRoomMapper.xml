@@ -5,8 +5,10 @@
 	<!-- 查询结果集 -->
 	<resultMap id="BaseResultMap" type="MeetingRoom">
 		<id column="room_id" property="roomId" jdbcType="INTEGER" />
-		<result column="room_name" property="roomName" jdbcType="VARCHAR" />
-		<result column="room_info" property="roomInfo" jdbcType="VARCHAR" />
+		<result column="room_palce" property="roomPalce" jdbcType="VARCHAR" />
+		<result column="is_reservation" property="isReservation" jdbcType="TINYINT" />
+		<result column="room_size" property="roomSize" jdbcType="VARCHAR" />
+		<result column="has_air_conditoning" property="hasAirConditoning" jdbcType="TINYINT" />
 	</resultMap>
 
 	<insert id="insert" parameterType="MeetingRoom">
@@ -33,4 +35,50 @@
 		select * from meeting_room order by room_id
 	</select>
 	
+
+	<select id="queryByPage" resultMap="BaseResultMap">
+		SELECT m.*
+		from meeting_room m
+		LIMIT #{start},#{pageSize}
+	</select>
+	
+	
+	<select id="queryByCondition" resultMap="BaseResultMap">
+		SELECT m.*
+		from meeting_room m
+
+		<where>
+			<if test="roomPlace != null">
+				and room_place=#{roomPlace,jdbcType=VARCHAR}
+			</if>
+			<if test="isReservation != null and isReservation != '' ">
+				and is_reservation=#{isReservation,jdbcType=TINYINT}
+			</if>
+			<if test="roomSize != null and roomSize != '' ">
+				and room_size=#{roomSize,jdbcType=INTEGER}
+			</if>
+			<if test="hasAirConditoning != null and hasAirConditoning != '' ">
+				and has_air_conditoning=#{hasAirConditoning,jdbcType=TINYINT}
+			</if>
+		</where>
+		LIMIT #{start},#{pageSize}				
+	</select>
+	
+	<select id="getCountByCondition" resultType="java.lang.Integer">
+		select count(*) from meeting_room
+		<where>
+			<if test="roomPlace != null">
+				and room_place=#{roomPlace,jdbcType=VARCHAR}
+			</if>
+			<if test="isReservation != null and isReservation != '' ">
+				and is_reservation=#{isReservation,jdbcType=TINYINT}
+			</if>
+			<if test="roomSize != null and roomSize != '' ">
+				and room_size=#{roomSize,jdbcType=INTEGER}
+			</if>
+			<if test="hasAirConditoning != null and hasAirConditoning != '' ">
+				and has_air_conditoning=#{hasAirConditoning,jdbcType=TINYINT}
+			</if>
+		</where>
+	</select>
 </mapper>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+	</head>
+	<body>
+		
+		<div class="container">
+			
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="#">部门管理</a></li>
+				<li>修改部门</li>
+			</ol>
+			
+			<h3 class="page-header">
+				修改部门
+			</h3>
+			
+			<form class="form-horizontal col-md-10">
+				<div class="form-group">
+					<label for="" class="col-md-2">部门名称</label>
+					<div class="col-md-10">
+						<input type="text" id="deptName" name="deptName" placeholder="请输入部门名称" class="form-control"/>
+					</div>					
+				</div>	
+				<div class="form-group">
+					<label for="" class="col-md-2">部门描述</label>
+					<div class="col-md-10">
+						<input type="text" id="deptInfo" name="deptInfo" placeholder="请输入部门描述" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
+					</div>
+					<div class="col-md-4">
+						<input type="button" value="修改部门" class="btn btn-primary btn-block" />
+						<input type="hidden" id="deptId" name="deptId" value="1" />
+					</div>
+				</div>	
+			</form>						
+		</div>			
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>		
+	</body>
+</html>

@@ -1,5 +1,8 @@
 package com.icss.test;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
+import java.sql.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -7,6 +10,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.icss.oa.meeting.dao.MeetingRoomMapper;
+import com.icss.oa.meeting.pojo.Meeting;
 import com.icss.oa.meeting.pojo.MeetingRoom;
 
 
@@ -51,4 +55,32 @@ public class TestMeetingRoomMapper {
 				System.out.println(room);
 			}
 		}	
+		
+		@Test
+		public void testQueryByPage() {
+				
+			List<MeetingRoom> list = mapper.queryByPage(0,7);
+			
+			for (MeetingRoom room : list) {
+				System.out.println(room);
+			}
+		}	
+		
+		
+		@Test
+		public void queryByCondition() {
+			List<MeetingRoom> list = mapper.queryByCondition(0, 5, null, null, null,null);
+			
+			for (MeetingRoom room : list) {
+				System.out.println(room);
+			}
+		}
+		
+		@Test
+		public void testGetCountByCondition() {		
+			
+			int count = mapper.getCountByCondition(null,null,null, null);
+			System.out.println(count);
+			
+		}
 }

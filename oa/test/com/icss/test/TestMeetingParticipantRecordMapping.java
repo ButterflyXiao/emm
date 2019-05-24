@@ -9,28 +9,56 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import com.icss.oa.meeting.dao.MeetingParticipantRecordMapping;
 import com.icss.oa.meeting.pojo.Meeting;
 import com.icss.oa.meeting.pojo.MeetingParticipantRecord;
-
+import com.icss.oa.system.pojo.Department;
 import com.icss.oa.system.pojo.Employee;
 
 public class TestMeetingParticipantRecordMapping {
 
-	// ´´½¨SpringÈÝÆ÷ºËÐÄ¶ÔÏó
+	// ï¿½ï¿½ï¿½ï¿½Springï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½
 	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 
-	// mapper¶ÔÏó
+	// mapperï¿½ï¿½ï¿½ï¿½
 	MeetingParticipantRecordMapping mapper = context.getBean(MeetingParticipantRecordMapping.class);
 
 	@Test
 	public void testInsert() {
 
 		Meeting meeting = new Meeting();
-		meeting.setMeeId(1);
+		meeting.setMeeId(2);
 
 		Employee employee = new Employee();
-		employee.setEmpId(4);
+		employee.setEmpId(2);
 
 		MeetingParticipantRecord reco = new MeetingParticipantRecord(meeting, employee);
 		mapper.insert(reco);
 
 	}
+	
+
+	
+	@Test
+	public void testDelete() {
+
+		Meeting meeting = new Meeting();
+		meeting.setMeeId(1);
+
+		Employee employee = new Employee();
+		employee.setEmpId(3);
+
+		MeetingParticipantRecord reco = new MeetingParticipantRecord(meeting, employee);
+		mapper.delete(reco);
+	}
+	
+	
+//	@Test
+//	public void testQueryByMeetingId() {
+//		
+//		int meeId=1;
+//		mapper.queryByMeeId(meeId);
+//	}
+//	
+//	@Test
+//	public void testQueryByEmployee(){
+//		
+//	}
 }
