@@ -63,5 +63,14 @@ public class EmployeeService {
 	public int getEmpCount() {
 		return mapper.getCount();
 	}
+	
+	
+	/**
+	 * 根据登录名查询员工
+	 */
+	@Transactional(readOnly=true)
+	public Employee queryEmpByName(String empLoginName) {
+		return mapper.queryByName(empLoginName);
+	}
 
 }

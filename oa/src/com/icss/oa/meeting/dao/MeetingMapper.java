@@ -18,8 +18,10 @@ public interface MeetingMapper {
 
 	List<Meeting> queryByPage(@Param("start") Integer start,@Param("pageSize") Integer pageSize);
 	List<Meeting> queryByTopic(String meeTopic);
-	List<Meeting> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("roomId") Integer roomId,@Param("empId") Integer empId,@Param("meeTopic") String meeTopic,@Param("meeApprovalStatus") String meeApprovalStatus,@Param("meeStartTime") Date meeStartTime);
+	List<Meeting> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("roomId") Integer roomId,@Param("empId") Integer empId,
+			@Param("meeTopic") String meeTopic,@Param("meeRecord") Date meeStartTime);
 	
-	int getCountByCondition(@Param("roomId") Integer roomId,@Param("empId") Integer empId,@Param("meeTopic") String meeTopic,@Param("meeApprovalStatus") String meeApprovalStatus,@Param("meeStartTime") Date meeStartTime);
+	int getCountByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("roomId") Integer roomId,@Param("empId") Integer empId,
+			@Param("meeTopic") String meeTopic,@Param("meeRecord") Date meeStartTime);
 
 }

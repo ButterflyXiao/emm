@@ -69,7 +69,7 @@ public class TestMeetingRoomMapper {
 		
 		@Test
 		public void queryByCondition() {
-			List<MeetingRoom> list = mapper.queryByCondition(0, 5, null, null, null,null);
+			List<MeetingRoom> list = mapper.queryByCondition(0, 5, "1", null, null,null);
 			
 			for (MeetingRoom room : list) {
 				System.out.println(room);

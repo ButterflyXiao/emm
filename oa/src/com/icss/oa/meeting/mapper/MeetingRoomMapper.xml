@@ -3,20 +3,20 @@
 <mapper namespace="com.icss.oa.meeting.dao.MeetingRoomMapper">
 	
 	<!-- 查询结果集 -->
-	<resultMap id="BaseResultMap" type="MeetingRoom">
+	<resultMap id="BaseResultMap" type="com.icss.oa.meeting.pojo.MeetingRoom">
 		<id column="room_id" property="roomId" jdbcType="INTEGER" />
-		<result column="room_palce" property="roomPalce" jdbcType="VARCHAR" />
+		<result column="room_place" property="roomPlace" jdbcType="VARCHAR" />
 		<result column="is_reservation" property="isReservation" jdbcType="TINYINT" />
 		<result column="room_size" property="roomSize" jdbcType="VARCHAR" />
 		<result column="has_air_conditoning" property="hasAirConditoning" jdbcType="TINYINT" />
 	</resultMap>
 
-	<insert id="insert" parameterType="MeetingRoom">
+	<insert id="insert" parameterType="com.icss.oa.meeting.pojo.MeetingRoom">
 		insert into meeting_room values
-		(default,#{roomPlace},#{isReservation},#{roomSize},#{hasAirConditoning})
+		(default,#{roomPlace},default,#{roomSize},#{hasAirConditoning})
 	</insert>
 
-	<update id="update" parameterType="MeetingRoom">
+	<update id="update" parameterType="com.icss.oa.meeting.pojo.MeetingRoom">
 		update meeting_room set
 		room_place=#{roomPlace},is_reservation=#{isReservation},room_size=#{roomSize},has_air_conditoning=#{hasAirConditoning}
 		where room_id=#{roomId}
@@ -28,7 +28,8 @@
 	</delete>
 	
 	<select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-		select * from meeting_room where room_id=#{roomId}
+		select room_id,room_place,is_reservation,room_size,has_air_conditoning
+		 from meeting_room where room_id=#{roomId}
 	</select>
 	
 	<select id="query" resultMap="BaseResultMap">

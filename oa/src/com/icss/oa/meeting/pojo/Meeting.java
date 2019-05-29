@@ -1,49 +1,38 @@
 package com.icss.oa.meeting.pojo;
 
-import java.sql.Date;
+
+
+import java.util.Date;
 
 import com.icss.oa.system.pojo.Employee;
 
 public class Meeting {
 	private Integer meeId;
+	private MeetingRoom meeRoom;
+	private Employee meeSponsor;
+	private Boolean meeApprovalStatus;
 	private String meeTopic;
-	private String meeApprovalStatus;
+	private String meeContent;
 	private String meeRecord;
-	private MeetingRoom meetingRoom;
-	private Employee sponsor;
 	private Date meeStartTime;
-	public Meeting(Integer meeId, String meeTopic, String meeApprovalStatus, String meeRecord, MeetingRoom meetingRoom,
-			Employee sponsor, Date meeStartTime, Integer meeDuration) {
-		super();
-		this.meeId = meeId;
-		this.meeTopic = meeTopic;
+	private int meeDuration;
+	public MeetingRoom getMeeRoom() {
+		return meeRoom;
+	}
+	public void setMeeRoom(MeetingRoom meeRoom) {
+		this.meeRoom = meeRoom;
+	}
+	public Employee getMeeSponsor() {
+		return meeSponsor;
+	}
+	public void setMeeSponsor(Employee meeSponsor) {
+		this.meeSponsor = meeSponsor;
+	}
+	public Boolean getMeeApprovalStatus() {
+		return meeApprovalStatus;
+	}
+	public void setMeeApprovalStatus(Boolean meeApprovalStatus) {
 		this.meeApprovalStatus = meeApprovalStatus;
-		this.meeRecord = meeRecord;
-		this.meetingRoom = meetingRoom;
-		this.sponsor = sponsor;
-		this.meeStartTime = meeStartTime;
-		this.meeDuration = meeDuration;
-	}
-	public Date getMeeStartTime() {
-		return meeStartTime;
-	}
-	public void setMeeStartTime(Date meeStartTime) {
-		this.meeStartTime = meeStartTime;
-	}
-	public Integer getMeeDuration() {
-		return meeDuration;
-	}
-	public void setMeeDuration(Integer meeDuration) {
-		this.meeDuration = meeDuration;
-	}
-	private Integer meeDuration;
-	
-
-	public Employee getSponsor() {
-		return sponsor;
-	}
-	public void setSponsor(Employee sponsor) {
-		this.sponsor = sponsor;
 	}
 	public String getMeeTopic() {
 		return meeTopic;
@@ -51,11 +40,11 @@ public class Meeting {
 	public void setMeeTopic(String meeTopic) {
 		this.meeTopic = meeTopic;
 	}
-	public String getMeeApprovalStatus() {
-		return meeApprovalStatus;
+	public String getMeeContent() {
+		return meeContent;
 	}
-	public void setMeeApprovalStatus(String meeApprovalStatus) {
-		this.meeApprovalStatus = meeApprovalStatus;
+	public void setMeeContent(String meeContent) {
+		this.meeContent = meeContent;
 	}
 	public String getMeeRecord() {
 		return meeRecord;
@@ -63,34 +52,52 @@ public class Meeting {
 	public void setMeeRecord(String meeRecord) {
 		this.meeRecord = meeRecord;
 	}
-	public MeetingRoom getMeetingRoom() {
-		return meetingRoom;
+	public Date getMeeStartTime() {
+		return meeStartTime;
 	}
-	public void setMeetingRoom(MeetingRoom meetingRoom) {
-		this.meetingRoom = meetingRoom;
+	public void setMeeStartTime(Date meeStartTime) {
+		this.meeStartTime = meeStartTime;
 	}
-
-
-	public Meeting() {
+	public int getMeeDuration() {
+		return meeDuration;
+	}
+	public void setMeeDuration(int meeDuration) {
+		this.meeDuration = meeDuration;
+	}
+	public Meeting(MeetingRoom meeRoom, Employee meeSponsor, Boolean meeApprovalStatus, String meeTopic,
+			String meeContent, String meeRecord, Date meeStartTime, int meeDuration) {
 		super();
-	}
-
-	public Meeting(String meeTopic, String meeApprovalStatus, String meeRecord, MeetingRoom meetingRoom,
-			Employee sponsor, Date meeStartTime, Integer meeDuration) {
-		super();
-		this.meeTopic = meeTopic;
+		this.meeRoom = meeRoom;
+		this.meeSponsor = meeSponsor;
 		this.meeApprovalStatus = meeApprovalStatus;
+		this.meeTopic = meeTopic;
+		this.meeContent = meeContent;
 		this.meeRecord = meeRecord;
-		this.meetingRoom = meetingRoom;
-		this.sponsor = sponsor;
 		this.meeStartTime = meeStartTime;
 		this.meeDuration = meeDuration;
 	}
+	public Meeting(Integer meeId, MeetingRoom meeRoom, Employee meeSponsor, Boolean meeApprovalStatus, String meeTopic,
+			String meeContent, String meeRecord, Date meeStartTime, int meeDuration) {
+		super();
+		this.meeId = meeId;
+		this.meeRoom = meeRoom;
+		this.meeSponsor = meeSponsor;
+		this.meeApprovalStatus = meeApprovalStatus;
+		this.meeTopic = meeTopic;
+		this.meeContent = meeContent;
+		this.meeRecord = meeRecord;
+		this.meeStartTime = meeStartTime;
+		this.meeDuration = meeDuration;
+	}
+	public Meeting() {
+		super();
+	}
 	@Override
 	public String toString() {
-		return "Meeting [meeId=" + meeId + ", meeTopic=" + meeTopic + ", meeApprovalStatus=" + meeApprovalStatus
-				+ ", meeRecord=" + meeRecord + ", meetingRoom=" + meetingRoom + ", sponsor=" + sponsor
-				+ ", meeStartTime=" + meeStartTime + ", meeDuration=" + meeDuration + "]";
+		return "Meeting [meeId=" + meeId + ", meeRoom=" + meeRoom + ", meeSponsor=" + meeSponsor
+				+ ", meeApprovalStatus=" + meeApprovalStatus + ", meeTopic=" + meeTopic + ", meeContent=" + meeContent
+				+ ", meeRecord=" + meeRecord + ", meeStartTime=" + meeStartTime + ", meeDuration=" + meeDuration
+				+ "]";
 	}
 	public Integer getMeeId() {
 		return meeId;
@@ -98,6 +105,5 @@ public class Meeting {
 	public void setMeeId(Integer meeId) {
 		this.meeId = meeId;
 	}
-	
-	
+
 }

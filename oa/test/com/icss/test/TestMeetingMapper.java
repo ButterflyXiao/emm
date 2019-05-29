@@ -26,7 +26,7 @@ public class TestMeetingMapper {
 		Employee sponsor = new Employee();
 		sponsor.setEmpId(1);
 		
-		mapper.insert(new Meeting("xx","鏈棰勭害","鏃犺褰�",room,sponsor,new Date(0),30));
+		mapper.insert(new Meeting(room, sponsor, null, null, null, null, null, 0));
 		
 	}
 	
@@ -37,13 +37,13 @@ public class TestMeetingMapper {
 		Employee sponsor = new Employee();
 		sponsor.setEmpId(2);
 		
-		mapper.update(new Meeting(1,"xx","鏈棰勭害","鏃犺褰�",room,sponsor,new Date(0),30));
+		mapper.update(new Meeting(1, room, sponsor, null, null, null, null, null, 0));
 		
 	}
 	
 	@Test
 	public void delete() {
-		mapper.delete(7);
+		mapper.delete(2);
 	}
 		
 	@Test
@@ -93,7 +93,7 @@ public class TestMeetingMapper {
 	
 	@Test
 	public void queryByCondition() {
-		List<Meeting> list = mapper.queryByCondition(0, 5, null, null, null, "鏈棰勭害",new Date(0));
+		List<Meeting> list = mapper.queryByCondition(null, null, null, null, null, null);
 		
 		for (Meeting mee : list) {
 			System.out.println(mee);
@@ -103,7 +103,7 @@ public class TestMeetingMapper {
 	@Test
 	public void testGetCountByCondition() {		
 		
-		int count = mapper.getCountByCondition(1 , 1, "", null,new Date(0));
+		int count = mapper.getCountByCondition(1 , 1,null,null, "", null);
 		System.out.println(count);
 		
 	}

@@ -13,34 +13,50 @@
 			
 			<ol class="breadcrumb">
 				<li><a href="#">OA系统</a></li>
-				<li><a href="#">系统管理</a></li>
-				<li><a href="#">部门管理</a></li>
-				<li>增加部门</li>
+				<li><a href="#">会议管理</a></li>
+				<li><a href="#">会议室管理</a></li>
+				<li>增加会议室</li>
 			</ol>
 			
 			<h3 class="page-header">
-				增加部门
+				增加会议室
 			</h3>
 			
 			<form class="form-horizontal col-md-10" id="form1">
 				<div class="form-group">
-					<label for="" class="col-md-2">部门名称</label>
+					<label for="" class="col-md-2">会议室地址</label>
 					<div class="col-md-10">
-						<input type="text" id="deptName" name="deptName" placeholder="请输入部门名称" class="form-control"/>
+						<input type="text" id="roomPlace" name="roomPlace" placeholder="请输入会议室地址" class="form-control"/>
 					</div>					
-				</div>	
+				</div>
 				<div class="form-group">
-					<label for="" class="col-md-2">部门描述</label>
+					<label for="" class="col-md-2">会议室可容纳人数</label>
 					<div class="col-md-10">
-						<input type="text" id="deptInfo" name="deptInfo" placeholder="请输入部门描述" class="form-control"/>
+						<input type="text" id="roomSize" name="roomSize" placeholder="请输入会议室容量" class="form-control"/>
 					</div>					
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-md-2">是否有空调</label>
+					
+					<div class="col-md-2">
+						<input type="radio" class="custom-control-input" id="hasAirConditoning" name="hasAirConditoning">
+						<label class="custom-control-label" for="defaultUnchecked">是</label>
+					</div>	
+					
+					<div class="custom-control custom-radio custom-control-inline col-md-2">
+						<input type="radio" class="custom-control-input" id="hasAirConditoning" name="hasAirConditoning">
+						<label class="custom-control-label" for="defaultChecked">否</label>
+					</div>	
+
+
 				</div>
 				<div class="form-group">
 					<div class="col-md-offset-4 col-md-4">
 						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
 					</div>
 					<div class="col-md-4">
-						<input type="button" id="addBtn" value="增加新部门" class="btn btn-primary btn-block" />
+						<input type="button" value="增加会议室" class="btn btn-primary btn-block"  id="addBtn">
 					</div>
 				</div>	
 			</form>						
@@ -48,7 +64,7 @@
 		
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
-		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>		
 		<script type="text/javascript" src="../js/layer/layer.js" ></script>
 		<script>			
 			//单击增加按钮
@@ -57,24 +73,25 @@
 				//表单验证
 				function checkForm() {
 					
-					//验证部门名称
-					var deptName = $('#deptName');
+					//验证会议室地址
+					var roomPlace = $('#roomPlace');
 					
-					if (deptName.val() == '' || deptName.val().length > 20 ) {
-						layer.msg('部门名称不能为空且最多20字符');
-						deptName.focus();
+					if (roomPlace.val() == '' || roomPlace.val().length > 20 ) {
+						layer.msg('会议室地址不能为空且最多20字符');
+						roomPlace.focus();
 						return false;
 					}
 					
-					//验证部门描述
-					var deptInfo = $('#deptInfo');
+					//验证会议室容量
+					var roomSize = $('#roomSize');
 					
-					if (deptInfo.val() == '' || deptInfo.val().length > 20 ) {
-						layer.msg('部门描述不能为空且最多20字符');
-						deptInfo.focus();
+					if (roomSize.val() == '' ) {
+						layer.msg('会议室容量不能为空且为正整数');
+						roomSize.focus();
 						return false;
 					}
-										
+								
+					
 					return true;
 				}					
 				
@@ -86,7 +103,7 @@
 				layer.load(2);
 				
 				//请求地址
-				var url = baseUrl + '/dept/add';
+				var url = baseUrl + '/room/add';
 				
 				//通过表单序列化形成请求参数
 				var params = $('#form1').serialize();
@@ -101,10 +118,10 @@
 				})
 				.done(function(data,status,xhr){
 					layer.closeAll();//关闭层
-					layer.msg('增加部门成功');
+					layer.msg('增加会议室成功');
 					
 					setTimeout(function(){
-						location.href = 'QueryDept.html';//重定向画面
+						location.href = 'QueryMeetingRoom.html';//重定向画面
 					},1000);
 				})
 				.fail(function(xhr,errorStatus,errorText){

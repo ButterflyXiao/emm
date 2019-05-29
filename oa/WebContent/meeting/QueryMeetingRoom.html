@@ -13,13 +13,13 @@
 			
 			<ol class="breadcrumb">
 				<li><a href="#">OA系统</a></li>
-				<li><a href="#">系统管理</a></li>
-				<li><a href="#">部门管理</a></li>
-				<li>部门列表</li>
+				<li><a href="#">会议管理</a></li>
+				<li><a href="#">会议室管理</a></li>
+				<li>会议室列表</li>
 			</ol>
 			
 			<h3 class="page-header">
-				部门列表
+				会议室列表
 			</h3>
 			
 			
@@ -33,28 +33,32 @@
 			<table class="table table-striped table-bordered table-hover table-condensed">
 				<thead>
 					<tr>
-						<th>部门编号</th>
-						<th>部门名称</th>
-						<th>部门描述</th>
+						<th>会议室编号</th>
+						<th>会议室地点</th>
+						<th>是否被预约</th>
+						<th>可容纳人数</th>
+						<th>是否有空调</th>
 						<th>操作</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr v-for="(dept,index) in deptData">
-						<td>{{dept.deptId}}</td>
-						<td>{{dept.deptName}}</td>
-						<td>{{dept.deptInfo}}</td>
+					<tr v-for="(room,index) in meeRoomData">
+						<td>{{room.roomId}}</td>
+						<td>{{room.roomPlace}}</td>
+						<td>{{room.isReservation}}</td>
+						<td>{{room.roomSize}}</td>
+						<td>{{room.hasAirConditoning}}</td>
 						<td>
-							<a :href="'UpdateDept.html?deptId=' + dept.deptId" class="btn btn-warning btn-xs">修改</a>
-							<input type="button" value="删除" class="btn btn-danger btn-xs" @click="del(dept.deptId,index);"/>
+							<input type="button" value="修改" class="btn btn-warning btn-xs" />
+							<input type="button" value="删除" class="btn btn-danger btn-xs" @click="del(room.roomId,index);"/>
 						</td>
-					</tr>					
+					</tr>	
 				</tbody>
 			</table>
 			
 			<div class="row">
 				<div class="col-sm-offset-8 col-md-4">
-					<a href="AddDept.html" class="btn btn-info btn-block">增加新部门</a>
+					<a href="AddMeetingRoom.html" class="btn btn-info btn-block">增加新会议室</a>
 				</div>
 			</div>
 						
@@ -62,7 +66,7 @@
 		
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
-		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>		
 		<script type="text/javascript" src="../js/layer/layer.js" ></script>
 		<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
 		<script>
@@ -70,13 +74,13 @@
 			var v = new Vue({
 				el:'.container', //绑定数据的范围
 				data: {          //数据模型
-					deptData:[]
+					meeRoomData:[]
 				},
 				methods:{  //声明方法
 					query:function() { //查询方法
 						
 						//请求地址
-						var url = baseUrl + '/dept/query';
+						var url = baseUrl + '/room/query';
 						
 						//通过表单序列化形成请求参数
 						var params = {};
@@ -91,26 +95,26 @@
 						})
 						.done(function(data,status,xhr){
 							//把响应的数据赋值到数据模型
-							v.deptData = data;							
+							v.meeRoomData = data;							
 						})
 						.fail(function(xhr,errorStatus,errorText){
 							layer.msg('请求失败！' + errorStatus + ',' + errorText);										
 						});
 						
 					},
-					del:function(deptId,index) { //删除方法
+					del:function(roomId,index) { //删除方法
 												
-						var flag = window.confirm("确定要删除此部门吗");
+						var flag = window.confirm("确定要删除此会议室吗");
 						
 						if (!flag)
 							return;
 						
 						
 						//请求地址
-						var url = baseUrl + '/dept/delete';
+						var url = baseUrl + '/room/delete';
 						
 						//通过表单序列化形成请求参数
-						var params = {deptId:deptId};
+						var params = {roomId:roomId};
 							
 						//ajax调用后台接口	
 						$.ajax({
@@ -121,22 +125,25 @@
 							async:true	  //true表示异步请求
 						})
 						.done(function(data,status,xhr){
-							layer.msg('删除部门成功');							
+							layer.msg('删除会议室成功');							
 							//location.reload();//刷新网页
 							
-							v.deptData.splice(index,1);//前端删除，删除数据模型数组中的指定元素，自动重新渲染画面					
+							v.meeRoomData.splice(index,1);//前端删除，删除数据模型数组中的指定元素，自动重新渲染画面					
 						})
 						.fail(function(xhr,errorStatus,errorText){
 							layer.msg('请求失败！' + errorStatus + ',' + errorText);										
-						});						
+						});
+						
 						
 					}
 				}
-			});					
+			});		
+			
 			
 			//调用查询方法
-			v.query();			
+			v.query();
 			
-		</script>		
+			
+		</script>	
 	</body>
 </html>

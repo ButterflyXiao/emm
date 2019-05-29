@@ -4,18 +4,19 @@
 	
 	<resultMap id="BaseResultMap" type="com.icss.oa.meeting.pojo.Meeting">
 		<id column="mee_id" property="meeId" jdbcType="INTEGER" />
+		<result column="mee_approval_status" property="meeApprovalStatus" jdbcType="TINYINT" />
 		<result column="mee_topic" property="meeTopic" jdbcType="VARCHAR" />
-		<result column="mee_approval_status" property="meeApprovalStatus" jdbcType="VARCHAR" />
+		<result column="mee_content" property="meeTopic" jdbcType="VARCHAR" />
 		<result column="mee_record" property="meeRecord" jdbcType="VARCHAR" />
-		<result column="mee_start_time" property="meeStartTime" jdbcType="DATE" />
-		<result column="mee_duration" property="meeDuration" jdbcType="INTEGER" />
+		<result column="mee_start_time" property="meeStartTime" jdbcType="TIMESTAMP" />
+		<result column="meeDuration" property="meeDuration" jdbcType="INTEGER" />	
 		
-		<association property="meetingRoom" javaType="com.icss.oa.meeting.pojo.MeetingRoom">
+		<association property="meeRoom" javaType="com.icss.oa.meeting.pojo.MeetingRoom">
 			<id column="room_id" property="roomId" jdbcType="INTEGER" />
 			<result column="room_place" property="roomPlace" jdbcType="VARCHAR" />
 			<result column="is_reservation" property="isReservation" jdbcType="TINYINT" />
 		</association>
-		<association property="sponsor" javaType="com.icss.oa.system.pojo.Employee">
+		<association property="meeSponsor" javaType="com.icss.oa.system.pojo.Employee">
 			<id column="emp_id" property="empId" jdbcType="INTEGER" />
 			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
 			
@@ -24,12 +25,12 @@
 
 	<insert id="insert" parameterType="com.icss.oa.meeting.pojo.Meeting">
 		insert into meeting values
-		(default,#{meeTopic},#{meeApprovalStatus},#{meeRecord},#{meetingRoom.roomId},#{sponsor.empId},#{meeStartTime},#{meeDuration})
+		(default,#{meeRoom.roomId},#{meeSponsor.empId},default,#{meeTopic},#{meeContent},default,#{meeStartTime},#{meeDuration})
 	</insert>
 
 	<update id="update" parameterType="com.icss.oa.meeting.pojo.Meeting">
 		update meeting set
-		mee_topic=#{meeTopic},mee_approval_status=#{meeApprovalStatus},mee_record=#{meeRecord},mee_room_id=#{meetingRoom.roomId},mee_sponsor_id=#{sponsor.empId},mee_start_time=#{meeStartTime},mee_duration=#{meeDuration}
+		mee_room_id=#{meeRoom.roomId},mee_sponsor_id=#{meeSponsor.empId},mee_approval_status=#{meeApprovalStatus},mee_topic=#{meeTopic},mee_content=#{meeContent},mee_record=#{meeRecord},mee_start_time=#{meeStartTime},mee_duration=#{meeDuration}
 		where mee_id=#{meeId}
 	</update>
 
@@ -52,7 +53,7 @@
 	</select> 
 	
 	<select id="queryByPage" resultMap="BaseResultMap">
-		SELECT m.`mee_id`,m.`mee_topic` ,m.`mee_approval_status`,m.`mee_record`,r.`room_place`,e.`emp_name`,m.`mee_start_time`,m.`mee_duration`
+		SELECT m.*,r.`room_place`,e.`emp_name`
 		from meeting m
 		JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
 		JOIN employee e ON m.`mee_sponsor_id`=e.`emp_id` 
@@ -66,7 +67,7 @@
 	</select>
 	
 	<select id="queryByCondition" resultMap="BaseResultMap">
-		SELECT m.`mee_id`,m.`mee_topic` ,m.`mee_approval_status`,m.`mee_record`,r.`room_place`,e.`emp_name`
+		SELECT m.*,r.`room_place`,e.`emp_name`
 		from meeting m
 		JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
 		JOIN employee e ON m.`mee_sponsor_id`=e.`emp_id` 

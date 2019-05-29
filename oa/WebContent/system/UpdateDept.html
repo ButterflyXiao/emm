@@ -22,7 +22,7 @@
 				修改部门
 			</h3>
 			
-			<form class="form-horizontal col-md-10">
+			<form class="form-horizontal col-md-10" id="form1">
 				<div class="form-group">
 					<label for="" class="col-md-2">部门名称</label>
 					<div class="col-md-10">
@@ -40,8 +40,8 @@
 						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
 					</div>
 					<div class="col-md-4">
-						<input type="button" value="修改部门" class="btn btn-primary btn-block" />
-						<input type="hidden" id="deptId" name="deptId" value="1" />
+						<input type="button" id="updateBtn" value="修改部门" class="btn btn-primary btn-block" />
+						<input type="hidden" id="deptId" name="deptId" />
 					</div>
 				</div>	
 			</form>						
@@ -49,6 +49,83 @@
 		
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
-		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>		
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		
+		<script>
+			//获得传递的id
+			var deptId = getParam('deptId');
+			
+			//用ajax调用后端接口
+			$.getJSON(baseUrl + '/dept/get',{deptId:deptId},function(data){				
+				//表单回显数据
+				$('#deptName').val(data.deptName);
+				$('#deptInfo').val(data.deptInfo);
+				$('#deptId').val(data.deptId);				
+			})
+			.error(function(){
+				alert('请求部门数据失败');				
+			});
+			
+			
+			//修改按钮单击
+			$('#updateBtn').click(function(){
+				
+				//表单验证
+				function checkForm() {
+					
+					//验证部门名称
+					var deptName = $('#deptName');
+					
+					if (deptName.val() == '' || deptName.val().length > 20 ) {
+						layer.msg('部门名称不能为空且最多20字符');
+						deptName.focus();
+						return false;
+					}
+					
+					//验证部门描述
+					var deptInfo = $('#deptInfo');
+					
+					if (deptInfo.val() == '' || deptInfo.val().length > 20 ) {
+						layer.msg('部门描述不能为空且最多20字符');
+						deptInfo.focus();
+						return false;
+					}
+										
+					return true;
+				}					
+				
+				//调用表单验证
+				if ( !checkForm() )
+					return;				
+				
+				
+				//加载层
+				layer.load(2);
+				
+				//请求url
+				var url = baseUrl + '/dept/update';
+				
+				//请求参数
+				var params = $('#form1').serialize();
+				
+				//ajax调用后台
+				$.post(url,params,function(data){
+					layer.closeAll();//关闭层
+					layer.msg('部门修改成功');
+					
+					setTimeout(function(){
+						location.href = 'QueryDept.html';//重定向画面
+					},1000);
+				})
+				.error(function(){
+					alert('更新部门数据失败');				
+				});								
+				
+			});			
+			
+		</script>
+		
 	</body>
 </html>
