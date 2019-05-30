@@ -36,37 +36,38 @@
 					</div>					
 				</div>
 
+	
 				<div class="form-group">
-					<label for="" class="col-md-2">是否有空调</label>
-					
-					<div class="col-md-2">
-						<input type="radio" class="custom-control-input" id="hasAirConditoning" name="hasAirConditoning">
-						<label class="custom-control-label" >是</label>
-					</div>	
-					
-					<div class="custom-control custom-radio custom-control-inline col-md-2">
-						<input type="radio" class="custom-control-input" id="hasAirConditoning" name="hasAirConditoning">
-						<label class="custom-control-label" >否</label>
-					</div>	
-
-
+					<label for="" class="col-xs-2">空调</label>
+					<div class="col-xs-10">
+						<div class="radio">
+							<label for="">
+								<input type="radio" name="hasAirConditoning" value="true"/>有
+							</label>
+							<label for="">
+								<input type="radio" name="hasAirConditoning" value="false" />无
+							</label>							
+						</div>
+					</div>					
 				</div>
 				
 				<div class="form-group">
-					<label for="" class="col-md-2">是否被预约</label>
-					
-					<div class="col-md-2">
-						<input type="radio" class="custom-control-input" id="isReservation" name="isReservation" >
-						<label class="custom-control-label" >是</label>
-					</div>	
-					
-					<div class="custom-control custom-radio custom-control-inline col-md-2">
-						<input type="radio" class="custom-control-input" id="isReservation" name="isReservation">
-						<label class="custom-control-label" >否</label>
-					</div>	
-
-
+					<label for="" class="col-xs-2">被预约</label>
+					<div class="col-xs-10">
+						<div class="radio">
+							<label for="">
+								<input type="radio" name="isReservation" value="true"/>是
+							</label>
+							<label for="">
+								<input type="radio" name="isReservation" value="false" />否
+							</label>							
+						</div>
+					</div>					
 				</div>
+
+				
+
+
 				<div class="form-group">
 					<div class="col-md-offset-4 col-md-4">
 						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
@@ -93,10 +94,17 @@
 			//用ajax调用后端接口
 			$.getJSON(baseUrl + '/room/get',{roomId:roomId},function(data){				
 				//表单回显数据
+
 				$('#roomPlace').val(data.roomPlace);
 				$('#roomSize').val(data.roomSize);
-				$("input[name='hasAirConditoning']").val(data.hasAirConditoning).prop("checked", true);
-				$("input[name='isReservation']").val(data.isReservation).prop("checked", true);
+				
+				var airConditoningCheck = [];	
+				airConditoningCheck.push(data.hasAirConditoning);	
+				$("input[name='hasAirConditoning']").val(airConditoningCheck);
+				
+				var reservationCheck = [];	
+				reservationCheck.push(data.isReservation);	
+				$("input[name='isReservation']").val(reservationCheck);
 
 							
 			})
@@ -105,59 +113,73 @@
 			});
 			
 			
-			//修改按钮单击
 			$('#updateBtn').click(function(){
 				
 				//表单验证
 				function checkForm() {
 					
-					//验证部门名称
-					var deptName = $('#deptName');
+					//验证会议室地址
+					var roomPlace = $('#roomPlace');
 					
-					if (deptName.val() == '' || deptName.val().length > 20 ) {
-						layer.msg('部门名称不能为空且最多20字符');
-						deptName.focus();
+					if (roomPlace.val() == '' || roomPlace.val().length > 20 ) {
+						layer.msg('会议室地址不能为空且最多20字符');
+						roomPlace.focus();
 						return false;
 					}
 					
-					//验证部门描述
-					var deptInfo = $('#deptInfo');
-					
-					if (deptInfo.val() == '' || deptInfo.val().length > 20 ) {
-						layer.msg('部门描述不能为空且最多20字符');
-						deptInfo.focus();
+					//验证会议室容量
+					var roomSize = $('#roomSize');
+					var re = /^[0-9]+$/ ;
+					if (roomSize.val() == ''||!re.test(roomSize.val()) ) {
+						layer.msg('会议室容量不能为空且为正整数');
+						roomSize.focus();
 						return false;
 					}
-										
+					
+					
+					//性别验证
+					var hasAirConditoning = $(':radio[name=hasAirConditoning]:checked');
+					
+					if(hasAirConditoning.val() == undefined) {
+						layer.msg('请选择是否有空调');						
+						return false;
+					}
+				
 					return true;
 				}					
 				
 				//调用表单验证
 				if ( !checkForm() )
-					return;				
-				
-				
+					return;	
+					
 				//加载层
 				layer.load(2);
 				
-				//请求url
-				var url = baseUrl + '/dept/update';
+				//请求地址
+				var url = baseUrl + '/room/update';
 				
-				//请求参数
+				//通过表单序列化形成请求参数
 				var params = $('#form1').serialize();
-				
-				//ajax调用后台
-				$.post(url,params,function(data){
+					
+				//ajax调用后台接口	
+				$.ajax({
+					url:url, //请求url
+					type:'POST',  //请求方式 GET POST
+					dataType:'text', //响应的数据格式
+					data:params,  //请求参数数据
+					async:true	  //true表示异步请求
+				})
+				.done(function(data,status,xhr){
 					layer.closeAll();//关闭层
-					layer.msg('部门修改成功');
+					layer.msg('修改会议室成功');
 					
 					setTimeout(function(){
-						location.href = 'QueryDept.html';//重定向画面
+						location.href = 'QueryMeetingRoom.html';//重定向画面
 					},1000);
 				})
-				.error(function(){
-					alert('更新部门数据失败');				
-				});								
+				.fail(function(xhr,errorStatus,errorText){
+					layer.msg('请求失败！' + errorStatus + ',' + errorText);										
+				});				
 				
 			});			
 			
