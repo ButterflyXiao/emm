@@ -1,38 +1,56 @@
 package com.icss.oa.common;
 
-import org.junit.experimental.theories.Theories;
-
+/**
+ * 公共分页计算功能
+ * @author Administrator
+ *
+ */
 public class Pager {
-
-	private int record;//总记录数
-	private int pageSize;//每页多少条
-	private int pageCount;//共几页
-	private int pageNum;//当前页码
-	private int start;
 	
-	public Pager(int record,int pageSize,int PageNum){
-		this.record=record;
-		this.pageSize=pageSize;
-		this.pageNum=PageNum;
+	private int recordCount; //总记录数
+	
+	private int pageSize;//每页多少条
+	
+	private int pageCount;//共几页
+	
+	private int pageNum;//当前页码
+	
+	private int start;//当前页的记录起始下标
 		
-		this.pageCount=this.record/this.pageSize;
-		if(this.record%this.pageSize!=0)
-			this.pageCount++;
+	/**
+	 * 分页计算
+	 * @param recordCount
+	 * @param pageSize
+	 * @param pageNum
+	 */
+	public Pager(int recordCount,int pageSize,int pageNum) {
 		
-		if(this.pageNum<1)
-			pageNum=1;
-		if(this.pageNum>pageCount)
-			this.pageNum=this.pageCount;
+		this.recordCount = recordCount;
+		this.pageSize = pageSize;
+		this.pageNum = pageNum;
 		
-		start=(this.pageNum-1)*this.pageSize;
+		//共几页
+		this.pageCount = this.recordCount / this.pageSize;
+		if (this.recordCount % this.pageSize != 0)
+			this.pageCount ++;
+		
+		//计算页码		
+		if (this.pageNum > this.pageCount)
+			this.pageNum = this.pageCount;
+		
+		if (this.pageNum < 1)
+			this.pageNum = 1;
+		
+		//计算起始位置
+		this.start = (this.pageNum - 1) * this.pageSize;		
 	}
 
-	public int getRecord() {
-		return record;
+	public int getRecordCount() {
+		return recordCount;
 	}
 
-	public void setRecord(int record) {
-		this.record = record;
+	public void setRecordCount(int recordCount) {
+		this.recordCount = recordCount;
 	}
 
 	public int getPageSize() {
@@ -65,6 +83,11 @@ public class Pager {
 
 	public void setStart(int start) {
 		this.start = start;
-	}
+	}	
 	
+//	public static void main(String[] args) {		
+//		Pager pager = new Pager(0, 15, 1);
+//		System.out.println(pager.getPageCount());
+//		System.out.println(pager.getStart());		
+//	}
 }

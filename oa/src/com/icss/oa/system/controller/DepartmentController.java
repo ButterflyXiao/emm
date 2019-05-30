@@ -14,74 +14,97 @@ import com.icss.oa.system.pojo.Department;
 import com.icss.oa.system.service.DepartmentService;
 
 
+
 /**
  * 部门控制器
+ * 
  * @author Administrator
  *
  */
 @Controller
 public class DepartmentController {
-	
+
 	@Autowired
 	private DepartmentService service;
 
 	/**
 	 * 增加部门
+	 * 
 	 * @param request
 	 * @param response
 	 * @param dept
 	 */
 	@RequestMapping("/dept/add")
-	public void add(HttpServletRequest request,HttpServletResponse response,Department dept) {
-		service.addDept(dept);		
+	public void add(HttpServletRequest request, HttpServletResponse response, Department dept) {
+		service.addDept(dept);
 	}
-	
+
 	/**
 	 * 修改部门
+	 * 
 	 * @param request
 	 * @param response
 	 * @param dept
 	 */
 	@RequestMapping("/dept/update")
-	public void update(HttpServletRequest request,HttpServletResponse response,Department dept) {
+	public void update(HttpServletRequest request, HttpServletResponse response, Department dept) {
 		service.updateDept(dept);
 	}
-	
+
 	/**
 	 * 删除部门
+	 * 
 	 * @param request
 	 * @param response
 	 * @param dept
 	 */
 	@RequestMapping("/dept/delete")
-	public void delete(HttpServletRequest request,HttpServletResponse response,Integer deptId) {
+	public void delete(HttpServletRequest request, HttpServletResponse response, Integer deptId) {
 		service.deleteDept(deptId);
 	}
-	
+
 	/**
 	 * 根据id查询部门
+	 * 
 	 * @param request
 	 * @param response
 	 * @param dept
 	 */
 	@RequestMapping("/dept/get")
 	@ResponseBody
-	public Department get(HttpServletRequest request,HttpServletResponse response,Integer deptId) {
+	public Department get(HttpServletRequest request, HttpServletResponse response, Integer deptId) {
 		return service.queryDeptById(deptId);
-	}	
-	
+	}
+
 	/**
 	 * 查询部门
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws InterruptedException 
+	 */
+	@RequestMapping("/dept/query")
+	@ResponseBody
+	public List<Department> query(HttpServletRequest request, HttpServletResponse response) throws InterruptedException {
+		
+		return service.queryDept();
+	}
+
+	/**
+	 * 批量删除部门
+	 * 
 	 * @param request
 	 * @param response
 	 * @return
 	 */
-	@RequestMapping("/dept/query")
-	@ResponseBody
-	public List<Department> query(HttpServletRequest request,HttpServletResponse response) {
+	@RequestMapping("/dept/deleteMany")
+	public void deleteMany(HttpServletRequest request, HttpServletResponse response,Integer[] deptIds) {
 		
-		return service.queryDept();
+		for (Integer deptId : deptIds) {
+			System.out.println(deptId);
+		}
+		
 	}
-	
-	
+
 }

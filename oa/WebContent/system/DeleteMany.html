@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+	</head>
+	<body>
+		
+		<div class="container">
+			
+			<form action="" id="form1">
+				<input type="checkbox" name="deptIds" value="1" />1
+				<input type="checkbox" name="deptIds" value="2" />2
+				<input type="checkbox" name="deptIds" value="3" />3
+				<input type="checkbox" name="deptIds" value="4" />4
+				<input type="button" id="addBtn" value="提交" />
+			</form>
+								
+		</div>			
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script>			
+			//单击增加按钮
+			$('#addBtn').click(function(){
+				
+				var params = $('#form1').serialize();
+				
+				alert(params);
+				
+				$.post(baseUrl + '/dept/deleteMany',params);
+				
+			});			
+		</script>
+	</body>
+</html>

@@ -57,6 +57,14 @@ public class EmployeeService {
 	}	
 	
 	/**
+	 * 条件分页查询员工
+	 */
+	@Transactional(readOnly=true)
+	public List<Employee> queryEmpByCondition(Pager pager,Integer deptId,Integer jobId,String empName) {
+		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(),deptId,jobId,empName);
+	}
+	
+	/**
 	 * 返回员工总记录数
 	 */
 	@Transactional(readOnly=true)
@@ -64,6 +72,13 @@ public class EmployeeService {
 		return mapper.getCount();
 	}
 	
+	/**
+	 * 返回满足条件员工总记录数
+	 */
+	@Transactional(readOnly=true)
+	public int getEmpCountByCondition(Integer deptId,Integer jobId,String empName) {
+		return mapper.getCountByCondition(deptId, jobId, empName);
+	}	
 	
 	/**
 	 * 根据登录名查询员工
@@ -71,6 +86,14 @@ public class EmployeeService {
 	@Transactional(readOnly=true)
 	public Employee queryEmpByName(String empLoginName) {
 		return mapper.queryByName(empLoginName);
+	}
+	
+	/**
+	 * 根据id查询员工
+	 */
+	@Transactional(readOnly=true)
+	public Employee queryEmpById(Integer empId) {
+		return mapper.queryById(empId);
 	}
 
 }

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<style>
+			.pagination {
+				margin: 0!important;
+			}			
+		</style>
+	</head>
+	<body>
+		
+		<div class="container">
+			
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="#">员工管理</a></li>
+				<li>员工列表</li>
+			</ol>
+			
+			<h3 class="page-header">
+				员工列表
+			</h3>
+			
+			
+			<div class="input-group" style="margin-bottom: 20px;">                	
+            	<input type="text" class="form-control" id="keywords" name="keywords" placeholder="请输入搜索关键字">
+                <span class="input-group-btn">
+                	<button type="button" class="btn btn-primary">普通检索</button>
+                </span>
+            </div>
+						
+			<table class="table table-striped table-bordered table-hover table-condensed">
+				<thead>
+					<tr>
+						<th>员工编号</th>
+						<th>姓名</th>
+						<th>性别</th>
+						<th>生日</th>
+						<th>电话</th>
+						<th>邮箱</th>
+						<th>部门</th>
+						<th>职务</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="(emp,index) in empData">
+						<td>{{emp.empId}}</td>
+						<td>{{emp.empName}}</td>
+						<td>{{emp.empSex}}</td>
+						<td>{{emp.empBirthdate}}</td>
+						<td>{{emp.empPhone}}</td>
+						<td>{{emp.empEmail}}</td>
+						<td>{{emp.dept==null?'无':emp.dept.deptName}}</td>
+						<td>{{emp.job.jobName}}</td>
+						<td>
+							<div class="dropdown">				
+								<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+									操作
+									<span class="caret"></span>
+								</button>				
+								<ul class="dropdown-menu">
+									<li><a href="javascript:void(0);">修改/查询详细</a></li>
+									<li><a href="javascript:void(0);">删除</a></li>
+									<li><a href="javascript:void(0);">XXX</a></li>
+									<li><a href="javascript:void(0);">XXX</a></li>
+								</ul>				
+							</div>
+						</td>
+					</tr>					
+				</tbody>
+			</table>
+			
+			<div class="row" style="margin-bottom: 20px;">
+				<div class="col-sm-4">
+					共{{pager.recordCount}}条数据，每页{{pager.pageSize}}条
+					，共{{pager.pageCount}}页，当前是第{{pager.pageNum}}页
+				</div>
+				<div class="col-sm-8">
+					<nav>
+			        	<ul class="pagination pull-right">
+			        		<li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(1);">首页</a></li>
+			                <li v-show="pager.pageNum!=1"><a href="javascript:void(0);" @click="query(pager.pageNum-1);">上页</a></li>
+			                
+			                <li :class="{active:pager.pageNum==item}" v-for="(item,index) in pageBtn"><a href="javascript:void(0);" @click="query(item);">{{item}}</a></li>
+			               			                
+			                <li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageNum+1);">下页</a></li>
+			                <li v-show="pager.pageNum!=pager.pageCount"><a href="javascript:void(0);" @click="query(pager.pageCount);">末页</a></li>			                
+			        	</ul>
+			        </nav>
+				</div>				
+			</div>			
+			
+			<div class="row">
+				<div class="col-sm-offset-8 col-md-4">
+					<a href="AddEmp.html" class="btn btn-info btn-block">增加新员工</a>
+				</div>
+			</div>
+						
+		</div>			
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
+		<script>
+		
+			var v = new Vue({
+				el:'.container', //绑定数据的范围
+				data: {          //数据模型
+					empData:[],   //员工数据集合
+					pager:{},     //分页信息
+					pageBtn:[]	  //分页按钮数组	
+				},
+				methods:{  //声明方法
+					query:function(pageNum) { //查询方法
+						
+						//请求地址
+						var url = baseUrl + '/emp/query';
+						
+						//通过表单序列化形成请求参数
+						var params = {
+							pageNum:pageNum,
+							pageSize:10
+						};
+							
+						//ajax调用后台接口	
+						$.ajax({
+							url:url, //请求url
+							type:'GET',  //请求方式 GET POST
+							dataType:'json', //响应的数据格式
+							data:params,  //请求参数数据
+							async:true	  //true表示异步请求
+						})
+						.done(function(data,status,xhr){
+							//把响应的数据赋值到数据模型
+							v.empData = data.list;	
+							v.pager = data.pager;
+							
+							//形成分页按钮
+							var start = v.pager.pageNum - 2;
+							var end = v.pager.pageNum + 2;
+							
+							if (v.pager.pageNum < 3) {
+								start = 1;
+								end = 5;
+							}
+							
+							if (end > v.pager.pageCount) {
+								end = v.pager.pageCount;
+							}
+							
+							if (v.pager.pageCount < 5) {
+								start = 1;
+							}
+							
+							v.pageBtn = [];
+							
+							for (var i = start;i <= end;i ++) {
+								v.pageBtn.push(i);
+							}							
+							
+						})
+						.fail(function(xhr,errorStatus,errorText){
+							layer.msg('请求失败！' + errorStatus + ',' + errorText);										
+						});
+						
+					},
+					del:function(deptId,index) { //删除方法
+												
+					
+					}
+				}
+			});					
+			
+			//调用查询方法
+			v.query(1);			
+			
+		</script>		
+	</body>
+</html>

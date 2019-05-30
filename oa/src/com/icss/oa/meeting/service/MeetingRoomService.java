@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.icss.oa.common.Pager;
 import com.icss.oa.meeting.dao.MeetingRoomMapper;
 import com.icss.oa.meeting.pojo.MeetingRoom;
+import com.icss.oa.system.pojo.Department;
 
 @Service
 @Transactional(rollbackFor=Exception.class)
@@ -60,4 +61,11 @@ public class MeetingRoomService {
 	int getCountByCondition(String roomPlace,Boolean isReservation,Integer roomSize,Boolean hasAirConditoning){
 		return getCountByCondition(roomPlace, isReservation, roomSize, hasAirConditoning);
 	}
+
+
+	@Transactional(readOnly=true)
+	public MeetingRoom queryRoomById(Integer roomId) {
+		return mapper.queryById(roomId);
+	}
+
 }

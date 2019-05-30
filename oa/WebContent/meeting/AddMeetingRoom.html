@@ -37,20 +37,19 @@
 				</div>
 
 				<div class="form-group">
-					<label for="" class="col-md-2">是否有空调</label>
-					
-					<div class="col-md-2">
-						<input type="radio" class="custom-control-input" id="hasAirConditoning" name="hasAirConditoning">
-						<label class="custom-control-label" for="defaultUnchecked">是</label>
-					</div>	
-					
-					<div class="custom-control custom-radio custom-control-inline col-md-2">
-						<input type="radio" class="custom-control-input" id="hasAirConditoning" name="hasAirConditoning">
-						<label class="custom-control-label" for="defaultChecked">否</label>
-					</div>	
-
-
+					<label for="" class="col-md-2">空调</label>
+					<div class="col-md-10">
+						<div class="radio">
+							<label for="">
+								<input type="radio" name="hasAirConditoning" value="1"/>有
+							</label>
+							<label for="">
+								<input type="radio" name="hasAirConditoning" value="0" />没有
+							</label>							
+						</div>
+					</div>					
 				</div>
+				
 				<div class="form-group">
 					<div class="col-md-offset-4 col-md-4">
 						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
@@ -84,14 +83,22 @@
 					
 					//验证会议室容量
 					var roomSize = $('#roomSize');
-					
-					if (roomSize.val() == '' ) {
+					var re = /^[0-9]+$/ ;
+					if (roomSize.val() == ''||!re.test(roomSize.val()) ) {
 						layer.msg('会议室容量不能为空且为正整数');
 						roomSize.focus();
 						return false;
 					}
-								
 					
+					
+					//性别验证
+					var hasAirConditoning = $(':radio[name=hasAirConditoning]:checked');
+					
+					if(hasAirConditoning.val() == undefined) {
+						layer.msg('请选择是否有空调');						
+						return false;
+					}
+				
 					return true;
 				}					
 				

@@ -50,7 +50,7 @@
 	</insert>
 	
 	<select id="queryByPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-		SELECT 	 e.`emp_id`,e.`emp_name`,d.`dept_name`,j.`job_name`,e.`emp_phone`
+		SELECT 	 e.*,d.`dept_name`,j.`job_name`,e.`emp_phone`
 		FROM     employee e 
 		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
 		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id` 
@@ -58,7 +58,7 @@
 	</select>
 	
 	<select id="queryByPage2" resultMap="BaseResultMap">
-		SELECT 	 e.`emp_id`,e.`emp_name`,d.`dept_name`,j.`job_name`,e.`emp_phone`
+		SELECT 	 e.*,d.`dept_name`,j.`job_name`,e.`emp_phone`,e.emp_birthdate
 		FROM     employee e 
 		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
 		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id` 
@@ -80,8 +80,9 @@
 		where	emp_login_name=#{empLoginName}
 	</select>
 	
+	<!-- 利用mysql拼接字符串 -->
 	<select id="queryByCondition" resultMap="BaseResultMap">
-		SELECT 	 e.`emp_id`,e.`emp_name`,d.`dept_name`,j.`job_name`,e.`emp_phone`
+		SELECT 	 e.*,d.`dept_name`,j.`job_name`
 		FROM     employee e 
 		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
 		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`
@@ -93,7 +94,47 @@
 				and emp_job_id=#{jobId,jdbcType=INTEGER}
 			</if>
 			<if test="empName != null and empName != '' ">
-				and emp_name=#{empName,jdbcType=VARCHAR}
+				and emp_name like concat('%',#{empName,jdbcType=VARCHAR},'%')
+			</if>
+		</where>
+		LIMIT #{start},#{pageSize}				
+	</select>
+	
+	<!-- mybatis的插值 -->
+	<select id="queryByCondition2" resultMap="BaseResultMap">
+		SELECT 	 e.*,d.`dept_name`,j.`job_name`
+		FROM     employee e 
+		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`
+		<where>
+			<if test="deptId != null">
+				and emp_dept_id=#{deptId,jdbcType=INTEGER}
+			</if>
+			<if test="jobId != null">
+				and emp_job_id=#{jobId,jdbcType=INTEGER}
+			</if>
+			<if test="empName != null and empName != '' ">
+				and emp_name like '%${empName}%'
+			</if>
+		</where>
+		LIMIT #{start},#{pageSize}				
+	</select>
+	
+	<!-- 查找字符串的子串下标间接实现模糊查询 -->
+	<select id="queryByCondition3" resultMap="BaseResultMap">
+		SELECT 	 e.*,d.`dept_name`,j.`job_name`
+		FROM     employee e 
+		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`
+		<where>
+			<if test="deptId != null">
+				and emp_dept_id=#{deptId,jdbcType=INTEGER}
+			</if>
+			<if test="jobId != null">
+				and emp_job_id=#{jobId,jdbcType=INTEGER}
+			</if>
+			<if test="empName != null and empName != '' ">
+				and instr(emp_name,#{empName})!=0
 			</if>
 		</where>
 		LIMIT #{start},#{pageSize}				
@@ -109,7 +150,21 @@
 				and emp_job_id=#{jobId,jdbcType=INTEGER}
 			</if>
 			<if test="empName != null and empName != '' ">
-				and emp_name=#{empName,jdbcType=VARCHAR}
+				and instr(emp_name,#{empName})!=0
+			</if>
+		</where>
+	</select>
+	
+	<!-- 动态生成in条件列表 -->
+	<select id="queryByIds" resultMap="BaseResultMap">
+		select *
+		from	employee
+		<where>
+			<if test="ids.length>0">
+				emp_id in 
+				<foreach collection="ids" index="i" item="empId" open="(" close=")" separator=",">
+					#{empId}
+				</foreach>
 			</if>
 		</where>
 	</select>

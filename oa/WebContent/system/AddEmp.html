@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
+	</head>
+	<body>
+		
+		<div class="container">
+			
+			<ol class="breadcrumb">
+				<li><a href="#">OA系统</a></li>
+				<li><a href="#">系统管理</a></li>
+				<li><a href="#">员工管理</a></li>
+				<li>增加员工</li>
+			</ol>
+			
+			<h3 class="page-header">
+				增加员工
+			</h3>
+			
+			<form class="form-horizontal col-md-10" id="form1">
+				<div class="form-group">
+					<label for="" class="col-md-2">员工姓名</label>
+					<div class="col-md-10">
+						<input type="text" id="empName" name="empName" placeholder="请输入员工姓名" class="form-control"/>
+					</div>					
+				</div>	
+				<div class="form-group">
+					<label for="" class="col-md-2">员工登录名</label>
+					<div class="col-md-10">
+						<input type="text" id="empLoginName" name="empLoginName" placeholder="请输入员工登录名" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">设置密码</label>
+					<div class="col-md-10">
+						<input type="password" id="empPwd" name="empPwd" placeholder="请输入密码" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">确认密码</label>
+					<div class="col-md-10">
+						<input type="password" id="empPwd2" name="empPwd2" placeholder="请再次输入密码" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">性别</label>
+					<div class="col-md-10">
+						<div class="radio">
+							<label for="">
+								<input type="radio" name="empSex" value="男"/>男
+							</label>
+							<label for="">
+								<input type="radio" name="empSex" value="女" />女
+							</label>							
+						</div>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">出生日期</label>
+					<div class="col-md-10">
+						<input type="text" id="empBirthdate" name="empBirthdate" placeholder="请选择日期" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">手机号码</label>
+					<div class="col-md-10">
+						<input type="text" id="empPhone" name="empPhone" placeholder="请输入手机号码" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">公司邮箱</label>
+					<div class="col-md-10">
+						<input type="text" id="empEmail" name="empEmail" placeholder="请输入公司邮箱" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">工资</label>
+					<div class="col-md-10">
+						<input type="text" id="empSal" name="empSal" placeholder="请输入工资" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">部门</label>
+					<div class="col-md-10">
+						<select name="dept.deptId" id="deptId" class="form-control">
+							<option value="">请选择部门</option>							
+						</select>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">职务</label>
+					<div class="col-md-10">
+						<select name="job.jobId" id="jobId" class="form-control">
+							<option value="">请选择职务</option>							
+						</select>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-md-2">个人简介</label>
+					<div class="col-md-10">
+						<textarea name="empInfo" id="empInfo" class="form-control"></textarea>
+					</div>					
+				</div>
+								
+				<div class="form-group">
+					<div class="col-md-offset-4 col-md-4">
+						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
+					</div>
+					<div class="col-md-4">
+						<input type="button" id="addBtn" value="增加新员工" class="btn btn-primary btn-block" />
+					</div>
+				</div>	
+			</form>						
+		</div>			
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
+		
+		<script>
+		
+			//绑定出生日期的日历控件
+			$('#empBirthdate').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d',
+				formatDate:'Y-m-d',
+				timepicker:false
+			});	
+			
+			//动态生成部门的列表
+			$.getJSON(baseUrl + "/dept/query",{},function(data){
+				
+				$.each(data, function(index,el) {
+					
+					$('#deptId').append('<option value="' + el.deptId + '">' + el.deptName + '</option>');
+					
+				});
+				
+			})
+			.error(function(){
+				alert('请求部门列表失败');				
+			});
+						
+			//动态生成职务的列表
+			$.getJSON(baseUrl + "/job/query",{},function(data){
+				
+				$.each(data, function(index,el) {
+					
+					$('#jobId').append('<option value="' + el.jobId + '">' + el.jobName + '</option>');
+					
+				});
+				
+			})
+			.error(function(){
+				alert('请求部门列表失败');				
+			});
+			
+		
+			//登录名失去焦点检查是否存在
+			$('#empLoginName').blur(function(){
+				
+				//调用后台接口
+				$.post(baseUrl + '/emp/checkLoginName',{empLoginName:$('#empLoginName').val()},function(data){
+										
+					if (data == true) {
+						layer.msg('登录名可以使用');
+					} else {
+						layer.msg('登录名已经被占用');
+						$('#empLoginName').focus();
+					}
+					
+				})
+				.error(function(){
+					alert('请求失败');				
+				});
+				
+			});			
+		
+		
+			//单击增加按钮
+			$('#addBtn').click(function(){
+				
+				//表单验证
+				function checkForm() {
+					
+					
+					//正则表达式
+					var r;
+					
+					//员工姓名
+					var empName = $('#empName');
+					
+					if (empName.val() == '' || empName.val().length > 20) {
+						layer.msg('姓名不能为空且最多20字符');
+						empName.focus();
+						return false;
+					}	
+					
+					//登录名验证
+					
+					
+					
+					//密码验证 （字母和数字6~8）
+					var empPwd = $('#empPwd');
+					
+					r = /^[a-zA-Z0-9]{6,8}$/;
+					
+					if ( !r.test( empPwd.val() ) ) {
+						layer.msg('密码只能是6~8位字母和数字');
+						empPwd.focus();
+						return false;
+					}
+					
+					//确认密码验证
+					
+					
+					//性别验证
+					var empSex = $(':radio[name=empSex]:checked');
+					
+					if(empSex.val() == undefined) {
+						layer.msg('请选择一个性别');						
+						return false;
+					}
+					
+					//手机验证
+					
+					
+					//邮箱验证
+					
+					
+					//工资（必须和职务相符）
+					
+					
+					//部门
+					
+					
+					//职务
+					
+					
+					//个人简介
+					
+										
+					return true;
+				}					
+				
+				//调用表单验证
+				if ( !checkForm() )
+					return;	
+					
+					
+				//调用后台接口增加数据
+				var url = baseUrl + '/emp/add';
+				
+				//请求参数
+				var params = $('#form1').serialize();
+				
+				$.post(url,params,function(data){
+					layer.msg('增加员工成功');					
+				})
+				.error(function(){
+					alert('增加员工请求失败');				
+				});
+					
+			
+			});			
+		</script>
+	</body>
+</html>

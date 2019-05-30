@@ -32,7 +32,7 @@
 				<div class="form-group">
 					<label for="" class="col-md-2">会议室可容纳人数</label>
 					<div class="col-md-10">
-						<input type="text" id="deptName" name="deptName" placeholder="请输入会议室容量" class="form-control"/>
+						<input type="text" id="roomSize" name="roomSize" placeholder="请输入会议室容量" class="form-control"/>
 					</div>					
 				</div>
 
@@ -40,13 +40,13 @@
 					<label for="" class="col-md-2">是否有空调</label>
 					
 					<div class="col-md-2">
-						<input type="radio" class="custom-control-input" id="hasAirConditoning" name="hasAirConditoning" checked="true">
-						<label class="custom-control-label" for="defaultUnchecked">是</label>
+						<input type="radio" class="custom-control-input" id="hasAirConditoning" name="hasAirConditoning">
+						<label class="custom-control-label" >是</label>
 					</div>	
 					
 					<div class="custom-control custom-radio custom-control-inline col-md-2">
 						<input type="radio" class="custom-control-input" id="hasAirConditoning" name="hasAirConditoning">
-						<label class="custom-control-label" for="defaultChecked">否</label>
+						<label class="custom-control-label" >否</label>
 					</div>	
 
 
@@ -56,13 +56,13 @@
 					<label for="" class="col-md-2">是否被预约</label>
 					
 					<div class="col-md-2">
-						<input type="radio" class="custom-control-input" id="isReservation" name="isReservation" checked="true">
-						<label class="custom-control-label" for="defaultUnchecked">是</label>
+						<input type="radio" class="custom-control-input" id="isReservation" name="isReservation" >
+						<label class="custom-control-label" >是</label>
 					</div>	
 					
 					<div class="custom-control custom-radio custom-control-inline col-md-2">
 						<input type="radio" class="custom-control-input" id="isReservation" name="isReservation">
-						<label class="custom-control-label" for="defaultChecked">否</label>
+						<label class="custom-control-label" >否</label>
 					</div>	
 
 
@@ -72,7 +72,9 @@
 						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
 					</div>
 					<div class="col-md-4">
-						<input type="button" value="增加会议室" class="btn btn-primary btn-block" onclick="alert('会议室增加成功')" />
+						
+						<input type="button" id="updateBtn" value="修改会议室" class="btn btn-primary btn-block" />
+						<input type="hidden" id="roomId" name="roomId" />
 					</div>
 				</div>	
 			</form>						
@@ -81,5 +83,84 @@
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>		
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		
+		<script>
+			//获得传递的id
+			var roomId = getParam('roomId');
+			
+			//用ajax调用后端接口
+			$.getJSON(baseUrl + '/room/get',{roomId:roomId},function(data){				
+				//表单回显数据
+				$('#roomPlace').val(data.roomPlace);
+				$('#roomSize').val(data.roomSize);
+				$("input[name='hasAirConditoning']").val(data.hasAirConditoning).prop("checked", true);
+				$("input[name='isReservation']").val(data.isReservation).prop("checked", true);
+
+							
+			})
+			.error(function(){
+				alert('请求会议室数据失败');				
+			});
+			
+			
+			//修改按钮单击
+			$('#updateBtn').click(function(){
+				
+				//表单验证
+				function checkForm() {
+					
+					//验证部门名称
+					var deptName = $('#deptName');
+					
+					if (deptName.val() == '' || deptName.val().length > 20 ) {
+						layer.msg('部门名称不能为空且最多20字符');
+						deptName.focus();
+						return false;
+					}
+					
+					//验证部门描述
+					var deptInfo = $('#deptInfo');
+					
+					if (deptInfo.val() == '' || deptInfo.val().length > 20 ) {
+						layer.msg('部门描述不能为空且最多20字符');
+						deptInfo.focus();
+						return false;
+					}
+										
+					return true;
+				}					
+				
+				//调用表单验证
+				if ( !checkForm() )
+					return;				
+				
+				
+				//加载层
+				layer.load(2);
+				
+				//请求url
+				var url = baseUrl + '/dept/update';
+				
+				//请求参数
+				var params = $('#form1').serialize();
+				
+				//ajax调用后台
+				$.post(url,params,function(data){
+					layer.closeAll();//关闭层
+					layer.msg('部门修改成功');
+					
+					setTimeout(function(){
+						location.href = 'QueryDept.html';//重定向画面
+					},1000);
+				})
+				.error(function(){
+					alert('更新部门数据失败');				
+				});								
+				
+			});			
+			
+		</script>	
 	</body>
 </html>
