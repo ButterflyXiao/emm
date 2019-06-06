@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		
+		<style>
+			.head-div {
+				width: 200px;
+				height: 200px;
+				border: 1px solid orange;
+				overflow: hidden;
+				border-radius: 50%;
+			}			
+		</style>
+	</head>
+	<body>
+		
+		<div class="head-div">
+			<img id="empPhoto" src="../images/liudehua.jpg" width="100%"/>			
+		</div>
+		
+		<div>
+			欢迎你，<span id="empLoginName"></span>
+		</div>
+		
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script>			
+			
+			//查询头像
+			$.get(baseUrl + '/emp/queryHead',function(data){
+				
+				$('#empPhoto').attr('src',data);
+				
+			})
+			.error(function(){
+				layer.msg('请求错误');
+			});
+			
+			//查询用户名
+			$.get(baseUrl + '/emp/getLoginName',function(data){
+				
+				$('#empLoginName').html(data);
+				
+			})
+			.error(function(){
+				layer.msg('请求错误');
+			});
+			
+			
+		</script>
+	</body>
+</html>

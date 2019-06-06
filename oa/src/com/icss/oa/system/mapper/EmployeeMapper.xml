@@ -49,6 +49,14 @@
 		#{empPhoto,jdbcType=LONGVARCHAR})
 	</insert>
 	
+	<update id="update" parameterType="com.icss.oa.system.pojo.Employee">
+		update employee
+		set    emp_name=#{empName},emp_sex=#{empSex},emp_birthdate=#{empBirthdate},
+			   emp_sal=#{empSal},emp_dept_id=#{dept.deptId},emp_job_id=#{job.jobId},
+			   emp_info=#{empInfo}
+		where  emp_id=#{empId}
+	</update>
+	
 	<select id="queryByPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
 		SELECT 	 e.*,d.`dept_name`,j.`job_name`,e.`emp_phone`
 		FROM     employee e 
@@ -168,5 +176,20 @@
 			</if>
 		</where>
 	</select>
+	
+	<!-- 修改头像 -->
+	<update id="updateHead">
+		update employee
+		set    emp_photo=#{empPhoto}
+		where  emp_login_name=#{empLoginName}
+	</update>	
+	
+	<!-- 查询头像 -->
+	<select id="queryHead" resultType="java.lang.String">
+		select emp_photo
+		from	employee
+		where   emp_login_name=#{empLoginName}
+	</select>
+		
 	
 </mapper>

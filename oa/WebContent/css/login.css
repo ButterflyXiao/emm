@@ -1,0 +1,93 @@
+@charset "utf-8";
+
+/*全局设置*/
+* {
+	margin: 0px;
+	padding: 0px;	
+}
+
+/*网页背景图片*/
+body {
+	background: url(../images/main_bg2.jpg) no-repeat;
+	background-size: cover;
+}
+
+/*登录主体区*/
+#main {
+	width: 350px;
+	height: 600px;
+	background: rgba(0,0,0,0.5);
+	margin: 40px auto;
+	border-top: 8px solid #0cc;
+	position: relative;
+}
+
+/*头像区*/
+#header-border {
+	width:198px;
+	height: 198px;
+	background: orange;
+	margin: 50px auto;
+	border-radius: 50%;
+	background: url(../images/liudehua.jpg);
+	background-size: cover;
+}
+
+/*账号密码区*/
+#account {
+	width: 262px;
+	height: 100px;		
+	margin: 0 auto;
+}
+
+/*文本框和密码框*/
+#account .input input {
+	width: 252px;
+	height: 40px;
+	padding: 0 5px;	
+	border: none;
+	outline: none;
+	margin-bottom: 20px;
+	font-size: 16px;
+	color: #00CCCC;
+	background: rgba(0,0,0,0.5);
+}
+
+/*登录按钮*/
+.btn-login {
+	display: block;
+	width: 262px;
+	height: 40px;	
+	margin: 20px auto;
+	border: none;
+	outline: none;
+	background: #00CCCC;
+	font-size: 16px;
+	color: #ffffff;
+	cursor: pointer;
+	position: relative;
+}
+
+/*鼠标按下*/
+.btn-login:active {
+	top:2px;	
+}
+
+.btn-login:hover {
+	background: #FFFFFF;
+	color: #00CCCC;
+}
+
+/*登录区底部*/
+#footer {
+	width: 100%;	
+	line-height: 50px;	
+	position: absolute;
+	bottom: 0;
+	text-align: center;
+}
+
+#footer a {
+	color: #CCCCCC;
+	text-decoration: none;	
+}

@@ -1,6 +1,6 @@
 package com.icss.oa.meeting.service;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +52,12 @@ public class MeetingService {
 	}
 	
 	@Transactional(readOnly=true)
+	public int getMeeCount() {
+		return mapper.getCount();
+	}
+	
+	
+	@Transactional(readOnly=true)
 	List<Meeting> queryByPage(Integer start,Integer pageSize){
 		return queryByPage(start, pageSize);
 	}
@@ -66,10 +72,23 @@ public class MeetingService {
 	}
 	
 	@Transactional(readOnly=true)
-	int getCountByCondition(Integer roomId,Integer empId,String meeTopic,String meeApprovalStatus,Date meeStartTime){
-		return getCountByCondition(roomId, empId, meeTopic, meeApprovalStatus, meeStartTime);
+	public int getMeeCountByCondition(Integer roomId,  String meeTopic, String meeApprovalStatus
+			) {
+		return mapper.getCountByCondition(roomId, meeTopic, meeApprovalStatus);
 	}
 
+	public List<Meeting> queryMeeByCondition(Pager pager, Integer roomId,  String meeTopic,
+			String meeApprovalStatus) {
+		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(),roomId,meeTopic,meeApprovalStatus);
+	}
+
+	public Meeting queryMeeById(Integer meeId) {
+		return mapper.queryById(meeId);
+	}
+
+
+
+	
 	
 
 }

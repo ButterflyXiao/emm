@@ -26,15 +26,13 @@
 			
 			<form class="form-horizontal col-md-10" id="form1">
 			
+
 				<div class="form-group">
 					<label for="" class="col-md-2">会议发起人</label>
 					<div class="col-md-10">
-						<input type="button" id="meeSponsor" name="meeSponsor" text="根据登录用户获取会议发起人" class="form-control"/>
-						 
-						
+						<input type="button" id="empLoginName"  class="form-control"  />
 					</div>					
 				</div>
-				
 				<div class="form-group">
 					<label for="" class="col-md-2">会议开始时间</label>
 					<div class="col-md-10">
@@ -97,8 +95,16 @@
 				formatDate:'Y-m-d H:i:00',
 				step:10
 			});
+			//查询用户名
+			$.get(baseUrl + '/emp/getLoginName',function(data){
+				
+				$('#empLoginName').val(data);
+				
+			})
+			.error(function(){
+				layer.msg('请求错误');
+			});
 			
-	
 		//动态生成会议室的列表
 			$.getJSON(baseUrl + "/room/query",{},function(data){
 				
@@ -175,6 +181,7 @@
 				//通过表单序列化形成请求参数
 				var params = $('#form1').serialize();
 					
+				console.log(params);
 				//ajax调用后台接口	
 				$.ajax({
 					url:url, //请求url
@@ -182,7 +189,7 @@
 					dataType:'text', //响应的数据格式
 					data:params,  //请求参数数据
 					async:true	  //true表示异步请求
-				})
+				},    )
 				.done(function(data,status,xhr){
 					layer.closeAll();//关闭层
 					layer.msg('增加会议成功');
@@ -192,7 +199,7 @@
 					},1000);
 				})
 				.fail(function(xhr,errorStatus,errorText){
-					layer.msg('请求失败！' + errorStatus + ',' + errorText);										
+					layer.msg('请求失败！' + errorStatus + ',' + errorText +xhr.responseText);										
 				});				
 				
 			});			

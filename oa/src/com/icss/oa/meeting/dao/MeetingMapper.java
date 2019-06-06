@@ -1,6 +1,6 @@
 package com.icss.oa.meeting.dao;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -15,13 +15,14 @@ public interface MeetingMapper {
 	void update(Meeting mee);
 	Meeting queryById(Integer meeId);
 	List<Meeting> query();
+	int getCount();
+
 
 	List<Meeting> queryByPage(@Param("start") Integer start,@Param("pageSize") Integer pageSize);
 	List<Meeting> queryByTopic(String meeTopic);
-	List<Meeting> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("roomId") Integer roomId,@Param("empId") Integer empId,
-			@Param("meeTopic") String meeTopic,@Param("meeRecord") Date meeStartTime);
+	List<Meeting> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("roomId") Integer roomId,
+			@Param("meeApprovalStatus") String meeApprovalStatus,@Param("meeTopic") String meeTopic);
 	
-	int getCountByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("roomId") Integer roomId,@Param("empId") Integer empId,
-			@Param("meeTopic") String meeTopic,@Param("meeRecord") Date meeStartTime);
-
-}
+	int getCountByCondition(@Param("roomId") Integer roomId,@Param("meeApprovalStatus") String meeApprovalStatus,
+			@Param("meeTopic") String meeTopic);
+	}

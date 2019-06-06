@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
+	</head>
+	<body>
+		
+		<div class="container">
+						
+			<form class="form-horizontal col-xs-12" id="form1" >
+				<div class="form-group">
+					<label for="" class="col-xs-2">会议发起人</label>
+					<div class="col-xs-10">
+						<input readonly  id="empId" name="meeSponsor.empId" placeholder="请选择会议发起人" class="form-control"/>
+
+					</div>					
+				</div>
+				
+				<div class="form-group">
+					<label for="" class="col-xs-2">会议室</label>
+					<div class="col-xs-10">
+						<select name="meeRoom.roomId" id="roomId" class="form-control">
+							<option value="">请选择会议室</option>							
+						</select>
+					</div>					
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-xs-2">会议开始时间</label>
+					<div class="col-xs-10">
+						<input type="text" id="meeStartTime" name="meeStartTime" placeholder="请输入会议开始时间" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-xs-2">会议持续时间(min)</label>
+					<div class="col-xs-10">
+						<input type="text" id="meeDuration" name="meeDuration" placeholder="请输入会议持续时间" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-xs-2">申请状态</label>
+					<div class="col-xs-10">
+						<input readonly  id="meeApprovalStatus" name="meeApprovalStatus" placeholder="申请状态" class="form-control"/>
+					</div>					
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-xs-2">会议主题</label>
+					<div class="col-xs-10">
+						<input type="text" id="meeTopic" name="meeTopic" placeholder="请输入会议主题" class="form-control"/>
+					</div>					
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-xs-2">会议内容</label>
+					<div class="col-xs-10">
+						<input type="text" id="meeContent" name="meeContent" placeholder="请输入会议内容" class="form-control"/>
+					</div>					
+				</div>
+
+				<div class="form-group">
+					<label for="" class="col-xs-2">选择会议记录文件</label>
+					<div class="col-xs-10">
+						<input type="file" id="meeRecord" name="meeRecord" placeholder="请选择会议记录文件" class="form-control"/>
+					</div>					
+				</div>
+
+				<div class="form-group">
+					<div class="col-md-offset-4 col-xs-4">
+						<input type="button" value="关闭" class="btn btn-warning btn-block" onclick="parent.layer.closeAll();"/>
+					</div>
+					<div class="col-xs-4">
+						<input type="button" id="updateBtn" value="修改" class="btn btn-primary btn-block" />
+						<input type="hidden" id="meeId" name="meeId" />
+					</div>
+					<div class="form-group">					
+						<div class="col-sm-8 col-sm-offset-2">
+							<div class="progress" style="display: none;">
+					        	<div id="son" class="progress-bar progress-bar-success progress-bar-striped active" style="width:0%;"> 
+					        		0%
+					            </div>        
+					        </div>
+					    </div>
+					</div>
+				</div>	
+			</form>						
+		</div>			
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
+		<script type="text/javascript" src="../js/param.js" ></script>
+		
+		<script>
+
+		
+			//动态生成部门列表（同步请求）
+			$.ajax({
+				url:baseUrl + "/room/query", //请求url
+				type:'GET',  //请求方式 GET POST
+				dataType:'json', //响应的数据格式				
+				async:false	  //true表示异步请求
+			})
+			.done(function(data,status,xhr){
+				$.each(data, function(index,el) {					
+					$('#roomId').append('<option value="' + el.roomId + '">' + el.roomPlace + '</option>');					
+				});
+			})
+			.fail(function(xhr,errorStatus,errorText){
+				layer.msg('请求失败！' + errorStatus + ',' + errorText);										
+			});	
+			
+
+		
+			//获得id
+			var meeId = getParam('meeId');
+			//获得页码
+			var pageNum = getParam('pageNum');
+			
+			//查询员工数据，做表单回显
+			$.getJSON(baseUrl + '/meeting/get',{meeId:meeId},function(data){
+				
+				$('#meeId').val(data.meeId);
+				$('#empId').val(data.meeSponsor.empId);
+				$('#roomId').val(data.meeRoom.roomId);
+				
+				$('#meeStartTime').val(data.meeStartTime);
+				$('#meeDuration').val(data.meeDuration);
+				$('#meeApprovalStatus').val(data.meeApprovalStatus);
+				$('#meeTopic').val(data.meeTopic);
+				$('#meeContent').val(data.meeContent);
+				$('#meeRecord').val(data.meeRecord);
+				
+			})
+			.error(function(){
+				alert('请求员工数据失败');				
+			});
+								
+			$('#meeStartTime').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d H:i:00',
+				formatDate:'Y-m-d H:i:00',
+				step:10
+			});
+
+			//选择文件后进行事件处理
+			$('#meeRecord').change(function(){
+				
+				//文件对象
+				var file = this.files[0];
+				
+				//判断是否是图片类型
+				if(file.type.match(/image/) == null) {
+					layer.msg('请选择一个图片类型的文件');
+					this.value = '';
+					return false;
+				}
+									
+				//判断文件大小
+				if (file.size > 1024 * 1024) {
+					layer.msg('图片大小不能超过1M');
+					this.value = '';
+					return false;
+				}
+							
+				
+			});	
+			//单击修改按钮
+			$('#updateBtn').click(function(){
+				//创建FormData对象（表单数据对象）
+//				var formData = new FormData();				
+				//表单验证
+				var meeDuration = $('#meeDuration');
+				
+				r = /^[0-9]{1,3}$/;
+				if ( !r.test( meeDuration.val() ) ) {
+					layer.msg('会议持续时间为0-999min之间');
+					meeDuration.focus();
+					return false;
+				}
+				
+				var roomId = $("#roomId option:selected"); 
+				if(roomId.val()==null){
+					layer.msg('请选择会议室');
+					meeTopic.focus();
+					return false;
+				}
+
+				//验证会议名称
+				var meeTopic = $('#meeTopic');
+				
+				if (meeTopic.val() == '' || meeTopic.val().length > 20 ) {
+					layer.msg('会议主题不能为空且最多20字符');
+					meeTopic.focus();
+					return false;
+				}
+				
+				
+				var meeContent = $('#meeContent');
+				
+				if (meeContent.val() == '' || meeContent.val().length > 200 ) {
+
+					layer.msg('会议内容不能为空且应该少于200字');
+					meeContent.focus();
+					return false;
+				}
+
+				var file = $('#meeRecord').get(0).files[0];
+				
+				//判断是否选择了文件
+				if (file == undefined) {
+					layer.msg('请先选择一个文件');
+					$('#meeRecord').focus();
+					return false;
+				}
+//					var empId=$('#empId');
+//					var meeStartTime=$('#meeStartTime');
+//					var meeApprovalStatus=$('#meeApprovalStatus');
+				//显示进度条
+				$('.progress').show();
+				
+
+				var formData = new FormData();	
+				//添加表单数据
+				formData.append('meeRecord',file);
+//					formData.append('meeSponsor.empId',empId.val());
+//					formData.append('meeRoom.roomId',roomId.val());
+//					formData.append('meeStartTime',meeStartTime);
+//					formData.append('meeDuration',meeDuration.val());
+//					formData.append('meeApprovalStatus',meeApprovalStatus.val());
+//					formData.append('meeTopic',meeTopic.val());
+//					formData.append('meeContent',meeContent.val());
+//					alert(formData.toString());					
+				return true;
+							
+				
+				var params = $('#form1').serialize();
+				
+				$.ajax({
+					url:baseUrl + '/meeting/update',
+					type:'POST',
+					data:formData,
+					processData:false,  //必须设置false
+					contentType:false,  //必须设置false
+					xhr:function() {
+						//获得XMLHttpRquest对象
+						var xhr = $.ajaxSettings.xhr();
+												
+						//如果浏览器支持上传进度事件，增加上传进度事件回调
+						if (xhr.upload) {							
+							xhr.upload.addEventListener('progress',progress,false);							
+						}		
+						
+						return xhr;
+					}
+				})
+				.done(function(){
+					layer.msg('修改会议成功');			
+					setTimeout(function(){							
+						window.parent.v.query(pageNum);
+						window.parent.layer.closeAll();	
+					},500);
+				})
+				.fail(function(xhr,errorStatus,errorText){
+					alert('修改会议请求失败,' + xhr.status + ',' + errorStatus + ',' + errorText);
+				});
+								
+			
+			});		
+			//上传进度事件回调函数
+			function progress(e) {	
+				
+				var loaded = e.loaded;//已经上传的大小
+				var total = e.total;//附件总大小
+				var pct =  Math.floor(loaded / total * 100);//上传的百分比
+				
+				//设置进度条的宽度和显示文字
+				$('#son').css('width',pct + '%');
+				$('#son').html(pct + '%');
+			}	
+		</script>
+	</body>
+</html>

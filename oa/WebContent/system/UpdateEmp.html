@@ -142,6 +142,8 @@
 		
 			//获得id
 			var empId = getParam('empId');
+			//获得页码
+			var pageNum = getParam('pageNum');
 			
 			//查询员工数据，做表单回显
 			$.getJSON(baseUrl + '/emp/get',{empId:empId},function(data){
@@ -196,22 +198,7 @@
 					}	
 					
 					//登录名验证
-					
-					
-					
-					//密码验证 （字母和数字6~8）
-					var empPwd = $('#empPwd');
-					
-					r = /^[a-zA-Z0-9]{6,8}$/;
-					
-					if ( !r.test( empPwd.val() ) ) {
-						layer.msg('密码只能是6~8位字母和数字');
-						empPwd.focus();
-						return false;
-					}
-					
-					//确认密码验证
-					
+										
 					
 					//性别验证
 					var empSex = $(':radio[name=empSex]:checked');
@@ -248,16 +235,21 @@
 					
 					
 				//调用后台接口增加数据
-				var url = baseUrl + '/emp/add';
+				var url = baseUrl + '/emp/update';
 				
 				//请求参数
 				var params = $('#form1').serialize();
 				
 				$.post(url,params,function(data){
-					layer.msg('增加员工成功');					
+					layer.msg('修改员工成功');
+					
+					setTimeout(function(){							
+						window.parent.v.query(pageNum);
+						window.parent.layer.closeAll();	
+					},500);
 				})
 				.error(function(){
-					alert('增加员工请求失败');				
+					alert('修改员工请求失败');				
 				});
 					
 			

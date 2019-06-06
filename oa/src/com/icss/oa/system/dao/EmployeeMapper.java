@@ -16,6 +16,10 @@ public interface EmployeeMapper {
 	
 	void insert(Employee emp);
 	
+	void update(Employee emp);
+	
+	void delete(Integer empId);
+	
 	List<Employee> queryByPage(HashMap<String, Integer> map);
 	
 	List<Employee> queryByPage2(@Param("start") Integer start,@Param("pageSize") Integer pageSize);
@@ -28,6 +32,18 @@ public interface EmployeeMapper {
 	
 	List<Employee> queryByCondition(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("deptId") Integer deptId,@Param("jobId") Integer jobId,@Param("empName") String empName);
 	
+	List<Employee> queryByCondition2(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("deptId") Integer deptId,@Param("jobId") Integer jobId,@Param("empName") String empName);
+	
+	List<Employee> queryByCondition3(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("deptId") Integer deptId,@Param("jobId") Integer jobId,@Param("empName") String empName);
+	
 	int getCountByCondition(@Param("deptId") Integer deptId,@Param("jobId") Integer jobId,@Param("empName") String empName);
+	
+	List<Employee> queryByIds(@Param("ids") Integer[] ids);
+	
+	void updateHead(@Param("empLoginName")String empLoginName,@Param("empPhoto")String empPhoto);
+	
+	String queryHead(@Param("empLoginName")String empLoginName);
+	
+	int getLastInsertId();
 
 }

@@ -2,6 +2,8 @@ package com.icss.oa.system.pojo;
 
 import java.sql.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 /**
  * 员工实体类
  * @author Administrator
@@ -19,6 +21,7 @@ public class Employee {
 	
 	private String empSex;
 	
+//	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date empBirthdate;
 	
 	private String empPhone;

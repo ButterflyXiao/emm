@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>用户登录</title>
+		<link rel="stylesheet" href="css/login.css" />
+	</head>
+	<body>
+		<!--登录主体区开始-->
+		<div id="main">
+			<!--头像区开始-->
+			<div id="header-border">
+				
+			</div>
+			<!--头像区结束-->
+			<!--账号密码区开始-->
+			<div id="account">
+				<form id="form1">
+					<div class="input">
+						<input autocomplete="off" type="text" id="empLoginName" name="empLoginName" placeholder="please input username" />
+					</div>
+					<div class="input">
+						<input type="password" id="empPwd" name="empPwd" placeholder="please input password" />
+					</div>
+				</form>
+			</div>
+			<!--账号密码区结束-->
+			<!--登录按钮开始-->
+			<input type="button" value="Sign In" class="btn-login" />
+			<!--登录按钮结束-->
+			<!--登录区底部开始-->
+			<div id="footer">
+				<a href="#">Forget Password?</a>
+			</div>
+			<!--登录区底部结束-->
+		</div>		
+		<!--登录主体区结束-->
+		
+		<script type="text/javascript" src="js/jquery.js" ></script>
+		<script type="text/javascript" src="js/global.js" ></script>
+		<script type="text/javascript" src="js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="js/layer/layer.js" ></script>
+		
+		<script>
+		
+			
+			//读取本地存储的用户名
+			var empLoginName = localStorage.getItem('empLoginName');
+			
+			if (empLoginName != null && empLoginName != '') {
+				$('#empLoginName').val(empLoginName);	
+			}
+			
+			//读取本地头像
+			var empPhoto = localStorage.getItem('empPhoto');			
+			
+			if (empPhoto != null && empPhoto != '') {
+				$('#header-border').css('background','url(' + empPhoto + ')');	
+			}			
+		
+		
+			//用户登录
+			$('.btn-login').click(function(){
+				
+				var url = baseUrl + '/emp/login';
+				
+				var params = $('#form1').serialize();
+				
+				$.post(url,params,function(data) {
+					
+					if (data == 1) {
+						layer.msg('用户名不存在');
+					} else if (data == 2) {
+						layer.msg('密码错误');
+					} else {
+						layer.msg('登录成功');
+						
+						//存储用户名
+						localStorage.setItem('empLoginName',$('#empLoginName').val());
+						
+						//存储头像数据
+						$.get(baseUrl + '/emp/queryHead',function(data){	
+							
+							if (data == null || data == '')
+								localStorage.removeItem('empPhoto');
+							else							
+								localStorage.setItem('empPhoto',data);							
+						})
+						.error(function(){					
+							layer.msg('请求头像失败');							
+						});
+						
+						
+						setTimeout(function(){
+							location.href = 'Main.html';
+						},500);
+						
+					}					
+				})
+				.error(function(){
+					
+					alert('请求失败');
+					
+				});
+				
+				
+			});			
+		</script>
+		
+	</body>
+</html>

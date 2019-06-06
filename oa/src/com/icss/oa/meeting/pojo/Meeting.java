@@ -4,18 +4,22 @@ package com.icss.oa.meeting.pojo;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.icss.oa.system.pojo.Employee;
 
 public class Meeting {
 	private Integer meeId;
 	private MeetingRoom meeRoom;
 	private Employee meeSponsor;
-	private Boolean meeApprovalStatus;
+	private String meeApprovalStatus;
 	private String meeTopic;
 	private String meeContent;
-	private String meeRecord;
+	private byte[] meeRecord;
+	
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")  
 	private Date meeStartTime;
-	private int meeDuration;
+	private Integer meeDuration;
 	public MeetingRoom getMeeRoom() {
 		return meeRoom;
 	}
@@ -28,10 +32,10 @@ public class Meeting {
 	public void setMeeSponsor(Employee meeSponsor) {
 		this.meeSponsor = meeSponsor;
 	}
-	public Boolean getMeeApprovalStatus() {
+	public String getMeeApprovalStatus() {
 		return meeApprovalStatus;
 	}
-	public void setMeeApprovalStatus(Boolean meeApprovalStatus) {
+	public void setMeeApprovalStatus(String meeApprovalStatus) {
 		this.meeApprovalStatus = meeApprovalStatus;
 	}
 	public String getMeeTopic() {
@@ -46,10 +50,10 @@ public class Meeting {
 	public void setMeeContent(String meeContent) {
 		this.meeContent = meeContent;
 	}
-	public String getMeeRecord() {
+	public byte[] getMeeRecord() {
 		return meeRecord;
 	}
-	public void setMeeRecord(String meeRecord) {
+	public void setMeeRecord(byte[] meeRecord) {
 		this.meeRecord = meeRecord;
 	}
 	public Date getMeeStartTime() {
@@ -58,14 +62,14 @@ public class Meeting {
 	public void setMeeStartTime(Date meeStartTime) {
 		this.meeStartTime = meeStartTime;
 	}
-	public int getMeeDuration() {
+	public Integer getMeeDuration() {
 		return meeDuration;
 	}
-	public void setMeeDuration(int meeDuration) {
+	public void setMeeDuration(Integer meeDuration) {
 		this.meeDuration = meeDuration;
 	}
-	public Meeting(MeetingRoom meeRoom, Employee meeSponsor, Boolean meeApprovalStatus, String meeTopic,
-			String meeContent, String meeRecord, Date meeStartTime, int meeDuration) {
+	public Meeting(MeetingRoom meeRoom, Employee meeSponsor, String meeApprovalStatus, String meeTopic,
+			String meeContent, byte[] meeRecord, Date meeStartTime, Integer meeDuration) {
 		super();
 		this.meeRoom = meeRoom;
 		this.meeSponsor = meeSponsor;
@@ -76,8 +80,8 @@ public class Meeting {
 		this.meeStartTime = meeStartTime;
 		this.meeDuration = meeDuration;
 	}
-	public Meeting(Integer meeId, MeetingRoom meeRoom, Employee meeSponsor, Boolean meeApprovalStatus, String meeTopic,
-			String meeContent, String meeRecord, Date meeStartTime, int meeDuration) {
+	public Meeting(Integer meeId, MeetingRoom meeRoom, Employee meeSponsor, String meeApprovalStatus, String meeTopic,
+			String meeContent, byte[] meeRecord, Date meeStartTime, Integer meeDuration) {
 		super();
 		this.meeId = meeId;
 		this.meeRoom = meeRoom;

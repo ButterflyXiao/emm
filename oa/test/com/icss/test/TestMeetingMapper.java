@@ -1,7 +1,6 @@
 package com.icss.test;
 
-import java.sql.Date;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -26,18 +25,18 @@ public class TestMeetingMapper {
 		Employee sponsor = new Employee();
 		sponsor.setEmpId(1);
 		
-		mapper.insert(new Meeting(room, sponsor, null, null, null, null, null, 0));
+		mapper.insert(new Meeting(0, room, sponsor,"审批中", "topic", "content", "无记录", new Date(), 20));
 		
 	}
 	
 	@Test
 	public void update() {
 		MeetingRoom room=new MeetingRoom();
-		room.setRoomId(2);
+		room.setRoomId(1);
 		Employee sponsor = new Employee();
-		sponsor.setEmpId(2);
+		sponsor.setEmpId(1);
 		
-		mapper.update(new Meeting(1, room, sponsor, null, null, null, null, null, 0));
+		mapper.update(new Meeting(6, room, sponsor, null, null, null, null, null, 0));
 		
 	}
 	
@@ -93,7 +92,7 @@ public class TestMeetingMapper {
 	
 	@Test
 	public void queryByCondition() {
-		List<Meeting> list = mapper.queryByCondition(null, null, null, null, null, null);
+		List<Meeting> list = mapper.queryByCondition(1, 10,  null, null, null);
 		
 		for (Meeting mee : list) {
 			System.out.println(mee);
@@ -103,7 +102,7 @@ public class TestMeetingMapper {
 	@Test
 	public void testGetCountByCondition() {		
 		
-		int count = mapper.getCountByCondition(1 , 1,null,null, "", null);
+		int count = mapper.getCountByCondition(  1,null,null);
 		System.out.println(count);
 		
 	}

@@ -6,6 +6,7 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
 	</head>
 	<body>
 		
@@ -65,8 +66,9 @@
 		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
 		<script type="text/javascript" src="../js/layer/layer.js" ></script>
 		<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
+		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
 		<script>
-		
+				
 			var v = new Vue({
 				el:'.container', //绑定数据的范围
 				data: {          //数据模型
@@ -135,7 +137,15 @@
 			});					
 			
 			//调用查询方法
-			v.query();			
+			v.query();	
+			
+			//绑定出生日期的日历控件
+			$('#keywords').datetimepicker({
+				lang:'ch',
+				format:'Y-m-d',
+				formatDate:'Y-m-d',
+				timepicker:false
+			});
 			
 		</script>		
 	</body>

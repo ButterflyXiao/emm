@@ -10,7 +10,7 @@ import com.icss.oa.system.dao.JobMapper;
 import com.icss.oa.system.pojo.Job;
 
 /**
- * 部门业务
+ * 职务业务
  * @author Administrator
  *
  */
@@ -24,30 +24,30 @@ public class JobService {
 	/**
 	 * 增加部门
 	 */	
-	public void addJob(Job job) {	
-		mapper.insert(job);		
+	public void addJob(Job Job) {	
+		mapper.insert(Job);		
 	}
 	
 	/**
 	 * 修改部门
 	 */
-	public void updateJob(Job job) {
-		mapper.update(job);
+	public void updateJob(Job Job) {
+		mapper.update(Job);
 	}
 	
 	/**
 	 * 删除部门
 	 */
-	public void deleteJob(Integer jobId) {
-		mapper.delete(jobId);
+	public void deleteJob(Integer JobId) {
+		mapper.delete(JobId);
 	}
 	
 	/**
 	 * 根据id查询部门
 	 */
 	@Transactional(readOnly=true)
-	public Job queryJobById(Integer jobId) {
-		return mapper.queryById(jobId);
+	public Job queryJobById(Integer JobId) {
+		return mapper.queryById(JobId);
 	}
 	
 	/**

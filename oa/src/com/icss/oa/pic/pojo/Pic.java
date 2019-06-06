@@ -3,6 +3,8 @@ package com.icss.oa.pic.pojo;
 import java.util.Arrays;
 import java.util.Date;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 /**
  * Õºø‚ µÃÂ¿‡
  * 

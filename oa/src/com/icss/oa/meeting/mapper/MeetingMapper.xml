@@ -4,12 +4,12 @@
 	
 	<resultMap id="BaseResultMap" type="com.icss.oa.meeting.pojo.Meeting">
 		<id column="mee_id" property="meeId" jdbcType="INTEGER" />
-		<result column="mee_approval_status" property="meeApprovalStatus" jdbcType="TINYINT" />
+		<result column="mee_approval_status" property="meeApprovalStatus" jdbcType="VARCHAR" />
 		<result column="mee_topic" property="meeTopic" jdbcType="VARCHAR" />
-		<result column="mee_content" property="meeTopic" jdbcType="VARCHAR" />
-		<result column="mee_record" property="meeRecord" jdbcType="VARCHAR" />
+		<result column="mee_content" property="meeContent" jdbcType="VARCHAR" />
 		<result column="mee_start_time" property="meeStartTime" jdbcType="TIMESTAMP" />
-		<result column="meeDuration" property="meeDuration" jdbcType="INTEGER" />	
+		<result column="mee_duration" property="meeDuration" jdbcType="INTEGER" />	
+		
 		
 		<association property="meeRoom" javaType="com.icss.oa.meeting.pojo.MeetingRoom">
 			<id column="room_id" property="roomId" jdbcType="INTEGER" />
@@ -22,15 +22,21 @@
 			
 		</association>
 	</resultMap>
+	<resultMap id="ResultMapWithBLOBs" type="com.icss.oa.meeting.pojo.Meeting"
+		extends="BaseResultMap">
+		<result column="mee_record" property="meeRecord" jdbcType="LONGVARBINARY" />
+	</resultMap>
 
 	<insert id="insert" parameterType="com.icss.oa.meeting.pojo.Meeting">
 		insert into meeting values
-		(default,#{meeRoom.roomId},#{meeSponsor.empId},default,#{meeTopic},#{meeContent},default,#{meeStartTime},#{meeDuration})
+		(default,#{meeRoom.roomId,jdbcType=INTEGER},#{meeSponsor.empId,jdbcType=INTEGER},default,#{meeTopic,jdbcType=VARCHAR},#{meeContent,jdbcType=VARCHAR},
+		default,#{meeStartTime,jdbcType=TIMESTAMP},#{meeDuration,jdbcType=INTEGER})
 	</insert>
 
 	<update id="update" parameterType="com.icss.oa.meeting.pojo.Meeting">
 		update meeting set
-		mee_room_id=#{meeRoom.roomId},mee_sponsor_id=#{meeSponsor.empId},mee_approval_status=#{meeApprovalStatus},mee_topic=#{meeTopic},mee_content=#{meeContent},mee_record=#{meeRecord},mee_start_time=#{meeStartTime},mee_duration=#{meeDuration}
+		mee_room_id=#{meeRoom.roomId},mee_sponsor_id=#{meeSponsor.empId},mee_approval_status=#{meeApprovalStatus},
+		mee_topic=#{meeTopic},mee_content=#{meeContent},mee_record=#{meeRecord,jdbcType=LONGVARBINARY},mee_start_time=#{meeStartTime},mee_duration=#{meeDuration}
 		where mee_id=#{meeId}
 	</update>
 
@@ -51,6 +57,10 @@
 		from meeting m
 		order by mee_id
 	</select> 
+	
+	<select id="getCount" resultType="java.lang.Integer">
+		select count(*) from meeting
+	</select>
 	
 	<select id="queryByPage" resultMap="BaseResultMap">
 		SELECT m.*,r.`room_place`,e.`emp_name`
@@ -75,18 +85,14 @@
 			<if test="roomId != null">
 				and mee_room_id=#{roomId,jdbcType=INTEGER}
 			</if>
-			<if test="empId != null">
-				and mee_sponsor_id=#{empId,jdbcType=INTEGER}
-			</if>
+
 			<if test="meeTopic != null and meeTopic != '' ">
-				and mee_topic=#{meeTopic,jdbcType=VARCHAR}
+				and mee_topic  like concat('%',#{meeTopic,jdbcType=VARCHAR},'%')
 			</if>
 			<if test="meeApprovalStatus != null and meeApprovalStatus != '' ">
 				and mee_approval_status=#{meeApprovalStatus,jdbcType=VARCHAR}
 			</if>
-			<if test="meeStartTime != null and meeStartTime != '' ">
-				and mee_start_time=#{meeStartTime,jdbcType=DATE}
-			</if>
+
 		</where>
 		LIMIT #{start},#{pageSize}				
 	</select>
@@ -97,18 +103,14 @@
 			<if test="roomId != null">
 				and mee_room_id=#{roomId,jdbcType=INTEGER}
 			</if>
-			<if test="empId != null">
-				and mee_sponsor_id=#{empId,jdbcType=INTEGER}
-			</if>
+
 			<if test="meeTopic != null and meeTopic != '' ">
-				and mee_topic=#{meeTopic,jdbcType=VARCHAR}
+				and mee_topic  like concat('%',#{meeTopic,jdbcType=VARCHAR},'%')
 			</if>
 			<if test="meeApprovalStatus != null and meeApprovalStatus != '' ">
 				and mee_approval_status=#{meeApprovalStatus,jdbcType=VARCHAR}
 			</if>
-			<if test="meeStartTime != null and meeStartTime != '' ">
-				and mee_start_time=#{meeStartTime,jdbcType=DATE}
-			</if>
+
 		</where>
 	</select>
 </mapper>

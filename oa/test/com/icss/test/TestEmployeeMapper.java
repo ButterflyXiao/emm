@@ -105,7 +105,7 @@ public class TestEmployeeMapper {
 	
 	@Test
 	public void testQueryByCondition() {		
-		List<Employee> list = mapper.queryByCondition(0,5,5, null, "");
+		List<Employee> list = mapper.queryByCondition(0,20,null, null, "%");
 		
 		for (Employee emp : list) {
 			System.out.println(emp);
@@ -113,11 +113,51 @@ public class TestEmployeeMapper {
 	}
 	
 	@Test
-	public void testGetCountByCondition() {		
+	public void testQueryByCondition2() {		
+		List<Employee> list = mapper.queryByCondition2(0,20,null, null, "ËÄ");
 		
+		for (Employee emp : list) {
+			System.out.println(emp);
+		}
+	}
+	
+	@Test
+	public void testQueryByCondition3() {		
+		List<Employee> list = mapper.queryByCondition3(0,20,null, null, "%");
+		
+		for (Employee emp : list) {
+			System.out.println(emp);
+		}
+	}
+	
+	@Test
+	public void testGetCountByCondition() {			
 		int count = mapper.getCountByCondition(7, 1, "");
-		System.out.println(count);
+		System.out.println(count);		
+	}
+	
+	@Test
+	public void testQueryByIds() {			
+		
+		Integer[] ids = {};
+		
+		List<Employee> list = mapper.queryByIds(ids);
+		
+		for (Employee emp : list) {
+			System.out.println(emp);
+		}
 		
 	}
-		
+	
+	@Test
+	public void testUpdateHead() {			
+		mapper.updateHead("zhangsan", "xxx");
+	}	
+	
+	@Test
+	public void testQueryHead() {			
+		System.out.println(mapper.queryHead("lisi"));
+	}
+	
+			
 }

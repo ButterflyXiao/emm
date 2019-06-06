@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!--设置浏览器的布局视口，只在移动端浏览器起作用-->
+		<meta name="viewport" content="width=width-device,initial-scale=1,user-scalable=no" />
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
+	</head>
+	<body>
+		
+		<div class="container">
+			
+			<div v-for="(item,index) in deptData">
+				<input name="dept" type="radio" :value="item.deptId" v-model="deptRadio" /> {{item.deptName}}
+			</div>
+			
+			<hr />
+			
+			<div v-for="(item,index) in deptData">
+				<input name="dept" type="checkbox" :value="item.deptId" v-model="deptCheck"/> {{item.deptName}}
+			</div>
+			
+			<div>
+				<select v-model="deptSelect">					
+					<option :value="item.deptId" v-for="(item,index) in deptData">{{item.deptName}}</option>
+				</select>
+			</div>
+			
+			<input type="button" value="radio值" @click="getRadio();" />
+			<input type="button" value="check值" @click="getCheck();" />
+			<input type="button" value="select值" @click="getSelect();" />
+												
+		</div>			
+		
+		<script type="text/javascript" src="../js/jquery.js" ></script>
+		<script type="text/javascript" src="../js/global.js" ></script>
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/layer/layer.js" ></script>
+		<script type="text/javascript" src="../js/vue/vue2.5.js" ></script>
+		<script>
+		
+			var v = new Vue({
+				el:'.container', //绑定数据的范围
+				data: {          //数据模型
+					deptData:[
+						{
+							deptId:1,
+							deptName:'技术部'
+						},
+						{
+							deptId:2,
+							deptName:'销售部'
+						},
+						{
+							deptId:3,
+							deptName:'财务部'
+						},
+						{
+							deptId:4,
+							deptName:'行政部'
+						}
+					],
+					deptRadio:2,
+					deptCheck:[2,4],
+					deptSelect:2
+				},
+				methods:{  //声明方法
+					getRadio:function(){						
+						console.log(this.deptRadio);						
+					},
+					getCheck:function() {
+						console.log(this.deptCheck);
+					},
+					getSelect:function(){
+						console.log(this.deptSelect);
+					}
+				}
+			});					
+			
+		</script>		
+	</body>
+</html>
