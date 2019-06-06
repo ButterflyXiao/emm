@@ -230,7 +230,7 @@
 				var formData = new FormData();	
 				//添加表单数据
 				formData.append('meeRecord',file);
-//					formData.append('meeSponsor.empId',empId.val());
+				formData.append('meeSponsor.empId',empId.val());
 //					formData.append('meeRoom.roomId',roomId.val());
 //					formData.append('meeStartTime',meeStartTime);
 //					formData.append('meeDuration',meeDuration.val());
@@ -238,11 +238,10 @@
 //					formData.append('meeTopic',meeTopic.val());
 //					formData.append('meeContent',meeContent.val());
 //					alert(formData.toString());					
-				return true;
 							
 				
 				var params = $('#form1').serialize();
-				
+
 				$.ajax({
 					url:baseUrl + '/meeting/update',
 					type:'POST',
@@ -252,9 +251,9 @@
 					xhr:function() {
 						//获得XMLHttpRquest对象
 						var xhr = $.ajaxSettings.xhr();
-												
 						//如果浏览器支持上传进度事件，增加上传进度事件回调
-						if (xhr.upload) {							
+						if (xhr.upload) {	
+
 							xhr.upload.addEventListener('progress',progress,false);							
 						}		
 						

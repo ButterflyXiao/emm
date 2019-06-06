@@ -44,10 +44,14 @@ public class MeetingController {
 	}
 	
 	@RequestMapping("/meeting/update")
-	public void update(MultipartFile meeRecord,HttpServletRequest request,HttpServletResponse response) throws IOException{
+	public void update(MultipartFile meeRecord,Integer empId,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		//转换文件数据为byte数组
 		byte[] fileDataCopy = FileCopyUtils.copyToByteArray( meeRecord.getInputStream() );
 		Meeting mee=new Meeting();
+		Employee sponsor=new Employee();
+		sponsor.setEmpId(empId);
+		mee.setMeeId(8);
+		mee.setMeeSponsor(sponsor);
 		mee.setMeeRecord(fileDataCopy);
 				
 		service.updateMee(mee);
