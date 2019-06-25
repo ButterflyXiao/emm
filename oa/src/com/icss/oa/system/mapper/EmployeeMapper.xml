@@ -9,13 +9,12 @@
 			jdbcType="VARCHAR" />
 		<result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
 		<result column="emp_sex" property="empSex" jdbcType="VARCHAR" />
-		<result column="emp_birthdate" property="empBirthdate"
-			jdbcType="DATE" />
+		<result column="emp_birthday" property="empBirthday" jdbcType="DATE" />
 		<result column="emp_phone" property="empPhone" jdbcType="VARCHAR" />
-		<result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
 		<result column="emp_sal" property="empSal" jdbcType="INTEGER" />
+		<result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
 		<result column="emp_info" property="empInfo" jdbcType="VARCHAR" />
-		<!-- 多对一关系映射，必须写在resultMap最后面 -->
+		<!-- 多对一映射必须写在resultMap最后面 -->
 		<association property="dept" javaType="com.icss.oa.system.pojo.Department">
 			<id column="dept_id" property="deptId" jdbcType="INTEGER" />
 			<result column="dept_name" property="deptName" jdbcType="VARCHAR" />
@@ -36,40 +35,44 @@
 
 	<insert id="insert" parameterType="com.icss.oa.system.pojo.Employee">
 		insert into employee (emp_id, emp_name, emp_login_name,
-		emp_pwd, emp_sex, emp_birthdate,
-		emp_phone, emp_email, emp_sal,
+		emp_pwd, emp_sex, emp_birthday,
+		emp_phone, emp_sal, emp_email,
 		emp_info, emp_dept_id, emp_job_id,
 		emp_photo)
 		values (default, #{empName,jdbcType=VARCHAR},
 		#{empLoginName,jdbcType=VARCHAR},
-		#{empPwd,jdbcType=VARCHAR}, #{empSex,jdbcType=VARCHAR}, #{empBirthdate,jdbcType=DATE},
-		#{empPhone,jdbcType=VARCHAR}, #{empEmail,jdbcType=VARCHAR},
-		#{empSal,jdbcType=INTEGER},
+		#{empPwd,jdbcType=VARCHAR}, #{empSex,jdbcType=VARCHAR}, #{empBirthday,jdbcType=DATE},
+		#{empPhone,jdbcType=VARCHAR}, #{empSal,jdbcType=INTEGER},
+		#{empEmail,jdbcType=VARCHAR},
 		#{empInfo,jdbcType=VARCHAR}, #{dept.deptId,jdbcType=INTEGER}, #{job.jobId,jdbcType=INTEGER},
 		#{empPhoto,jdbcType=LONGVARCHAR})
 	</insert>
 	
-	<update id="update" parameterType="com.icss.oa.system.pojo.Employee">
+	<update id="update"  parameterType="com.icss.oa.system.pojo.Employee">
 		update employee
-		set    emp_name=#{empName},emp_sex=#{empSex},emp_birthdate=#{empBirthdate},
-			   emp_sal=#{empSal},emp_dept_id=#{dept.deptId},emp_job_id=#{job.jobId},
+		set    emp_name=#{empName},emp_sex=#{empSex},emp_birthday=#{empBirthday},
+			   emp_phone=#{empPhone},emp_sal=#{empSal},emp_dept_id=#{dept.deptId},emp_job_id=#{job.jobId},
 			   emp_info=#{empInfo}
 		where  emp_id=#{empId}
 	</update>
 	
+	<delete id="delete" parameterType="java.lang.Integer">
+		delete from employee where emp_id=#{empId}
+	</delete>
+	
 	<select id="queryByPage" resultMap="BaseResultMap" parameterType="java.util.HashMap">
-		SELECT 	 e.*,d.`dept_name`,j.`job_name`,e.`emp_phone`
-		FROM     employee e 
+		SELECT   e.`emp_id`,e.`emp_name`,e.`emp_phone`,d.`dept_name`,j.`job_name`
+		FROM     employee e
 		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
-		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id` 
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`
 		LIMIT #{start},#{pageSize}
 	</select>
 	
 	<select id="queryByPage2" resultMap="BaseResultMap">
-		SELECT 	 e.*,d.`dept_name`,j.`job_name`,e.`emp_phone`,e.emp_birthdate
-		FROM     employee e 
+		SELECT   e.*,d.`dept_name`,j.`job_name`
+		FROM     employee e
 		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
-		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id` 
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`
 		LIMIT #{start},#{pageSize}
 	</select>
 	
@@ -78,26 +81,27 @@
 	</select>
 	
 	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-		SELECT e.*,e.`emp_dept_id` dept_id,e.`emp_job_id` job_id FROM employee e
-		WHERE emp_id=#{empId}
+		SELECT e.*,e.`emp_dept_id` dept_id,e.`emp_job_id` job_id
+		FROM	employee e
+		where	emp_id=#{empId}
 	</select>
-
+	
 	<select id="queryByName" resultMap="BaseResultMap" parameterType="java.lang.String">
-		select *
-		from	employee
+		SELECT *
+		FROM	employee e
 		where	emp_login_name=#{empLoginName}
 	</select>
 	
-	<!-- 利用mysql拼接字符串 -->
+	<!-- 使用mysql的concat函数 -->
 	<select id="queryByCondition" resultMap="BaseResultMap">
-		SELECT 	 e.*,d.`dept_name`,j.`job_name`
-		FROM     employee e 
+		SELECT   e.*,d.`dept_name`,j.`job_name`
+		FROM     employee e
 		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
-		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`		
 		<where>
 			<if test="deptId != null">
 				and emp_dept_id=#{deptId,jdbcType=INTEGER}
-			</if>
+			</if>			
 			<if test="jobId != null">
 				and emp_job_id=#{jobId,jdbcType=INTEGER}
 			</if>
@@ -105,19 +109,19 @@
 				and emp_name like concat('%',#{empName,jdbcType=VARCHAR},'%')
 			</if>
 		</where>
-		LIMIT #{start},#{pageSize}				
-	</select>
+		LIMIT #{start},#{pageSize}		
+	</select>	
 	
-	<!-- mybatis的插值 -->
+	<!-- 使用mybatis的${}插值 -->
 	<select id="queryByCondition2" resultMap="BaseResultMap">
-		SELECT 	 e.*,d.`dept_name`,j.`job_name`
-		FROM     employee e 
+		SELECT   e.*,j.`job_name`
+		FROM     employee e
 		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
-		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`		
 		<where>
 			<if test="deptId != null">
 				and emp_dept_id=#{deptId,jdbcType=INTEGER}
-			</if>
+			</if>			
 			<if test="jobId != null">
 				and emp_job_id=#{jobId,jdbcType=INTEGER}
 			</if>
@@ -125,27 +129,27 @@
 				and emp_name like '%${empName}%'
 			</if>
 		</where>
-		LIMIT #{start},#{pageSize}				
+		LIMIT #{start},#{pageSize}		
 	</select>
 	
-	<!-- 查找字符串的子串下标间接实现模糊查询 -->
+	<!-- 使用mysql的instr函数判断是否包含数据 -->
 	<select id="queryByCondition3" resultMap="BaseResultMap">
-		SELECT 	 e.*,d.`dept_name`,j.`job_name`
-		FROM     employee e 
+		SELECT   e.*,d.`dept_name`,j.`job_name`
+		FROM     employee e
 		LEFT OUTER JOIN department d ON e.`emp_dept_id`=d.`dept_id`
-		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`
+		LEFT OUTER JOIN job j ON e.`emp_job_id`=j.`job_id`		
 		<where>
 			<if test="deptId != null">
 				and emp_dept_id=#{deptId,jdbcType=INTEGER}
-			</if>
+			</if>			
 			<if test="jobId != null">
 				and emp_job_id=#{jobId,jdbcType=INTEGER}
 			</if>
 			<if test="empName != null and empName != '' ">
-				and instr(emp_name,#{empName})!=0
+				and instr(emp_name,#{empName,jdbcType=VARCHAR})!=0
 			</if>
 		</where>
-		LIMIT #{start},#{pageSize}				
+		LIMIT #{start},#{pageSize}		
 	</select>
 	
 	<select id="getCountByCondition" resultType="java.lang.Integer">
@@ -153,17 +157,17 @@
 		<where>
 			<if test="deptId != null">
 				and emp_dept_id=#{deptId,jdbcType=INTEGER}
-			</if>
+			</if>			
 			<if test="jobId != null">
 				and emp_job_id=#{jobId,jdbcType=INTEGER}
 			</if>
 			<if test="empName != null and empName != '' ">
-				and instr(emp_name,#{empName})!=0
+				and emp_name like concat('%',#{empName,jdbcType=VARCHAR},'%')
 			</if>
 		</where>
-	</select>
+	</select>	
 	
-	<!-- 动态生成in条件列表 -->
+	<!-- 动态形成in后面的列表 -->
 	<select id="queryByIds" resultMap="BaseResultMap">
 		select *
 		from	employee
@@ -173,23 +177,24 @@
 				<foreach collection="ids" index="i" item="empId" open="(" close=")" separator=",">
 					#{empId}
 				</foreach>
-			</if>
-		</where>
+			</if>		
+		</where>	
 	</select>
 	
-	<!-- 修改头像 -->
+	<!-- 更新头像 -->
 	<update id="updateHead">
 		update employee
 		set    emp_photo=#{empPhoto}
 		where  emp_login_name=#{empLoginName}
-	</update>	
+	</update>
 	
-	<!-- 查询头像 -->
+	<!-- 查询当前用户头像 -->
 	<select id="queryHead" resultType="java.lang.String">
-		select emp_photo
-		from	employee
-		where   emp_login_name=#{empLoginName}
+		select emp_photo from employee where emp_login_name=#{empLoginName}
 	</select>
-		
 	
+	<select id="getLastInsertId" resultType="java.lang.Integer">
+		SELECT LAST_INSERT_ID()
+	</select>	
+
 </mapper>

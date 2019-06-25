@@ -1,4 +1,4 @@
-//请求url前缀
+//声明请求地址的前缀
 var baseUrl = 'http://localhost:7777/oa';
 
 //全局ajax事件回调，处理ajax请求session超时

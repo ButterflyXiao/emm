@@ -9,6 +9,7 @@
 		<result column="is_reservation" property="isReservation" jdbcType="TINYINT" />
 		<result column="room_size" property="roomSize" jdbcType="VARCHAR" />
 		<result column="has_air_conditoning" property="hasAirConditoning" jdbcType="TINYINT" />
+
 	</resultMap>
 
 	<insert id="insert" parameterType="com.icss.oa.meeting.pojo.MeetingRoom">
@@ -28,7 +29,7 @@
 	</delete>
 	
 	<select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-		select room_id,room_place,is_reservation,room_size,has_air_conditoning
+		select *
 		 from meeting_room where room_id=#{roomId}
 	</select>
 	
@@ -82,4 +83,7 @@
 			</if>
 		</where>
 	</select>
+	
+	
+
 </mapper>

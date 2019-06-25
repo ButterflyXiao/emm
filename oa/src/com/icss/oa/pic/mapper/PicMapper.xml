@@ -31,7 +31,7 @@
 
 	<select id="queryById" resultMap="ResultMapWithBLOBs"
 		parameterType="java.lang.Integer">
-		select *		
+		select *
 		from pic
 		where pic_id = #{picId,jdbcType=INTEGER}
 	</select>

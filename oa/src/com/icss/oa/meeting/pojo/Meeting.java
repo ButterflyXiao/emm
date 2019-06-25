@@ -2,6 +2,7 @@ package com.icss.oa.meeting.pojo;
 
 
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -15,7 +16,9 @@ public class Meeting {
 	private String meeApprovalStatus;
 	private String meeTopic;
 	private String meeContent;
+	private String meeRecordName;
 	private byte[] meeRecord;
+	private Integer meePar;
 	
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")  
 	private Date meeStartTime;
@@ -69,7 +72,7 @@ public class Meeting {
 		this.meeDuration = meeDuration;
 	}
 	public Meeting(MeetingRoom meeRoom, Employee meeSponsor, String meeApprovalStatus, String meeTopic,
-			String meeContent, byte[] meeRecord, Date meeStartTime, Integer meeDuration) {
+			String meeContent, byte[] meeRecord,String meeRecordName, Date meeStartTime, Integer meeDuration) {
 		super();
 		this.meeRoom = meeRoom;
 		this.meeSponsor = meeSponsor;
@@ -79,9 +82,10 @@ public class Meeting {
 		this.meeRecord = meeRecord;
 		this.meeStartTime = meeStartTime;
 		this.meeDuration = meeDuration;
+		this.meeRecordName = meeRecordName;
 	}
 	public Meeting(Integer meeId, MeetingRoom meeRoom, Employee meeSponsor, String meeApprovalStatus, String meeTopic,
-			String meeContent, byte[] meeRecord, Date meeStartTime, Integer meeDuration) {
+			String meeContent, byte[] meeRecord, Date meeStartTime, Integer meeDuration,String meeRecordName) {
 		super();
 		this.meeId = meeId;
 		this.meeRoom = meeRoom;
@@ -92,6 +96,7 @@ public class Meeting {
 		this.meeRecord = meeRecord;
 		this.meeStartTime = meeStartTime;
 		this.meeDuration = meeDuration;
+		this.meeRecordName=meeRecordName;
 	}
 	public Meeting() {
 		super();
@@ -100,14 +105,56 @@ public class Meeting {
 	public String toString() {
 		return "Meeting [meeId=" + meeId + ", meeRoom=" + meeRoom + ", meeSponsor=" + meeSponsor
 				+ ", meeApprovalStatus=" + meeApprovalStatus + ", meeTopic=" + meeTopic + ", meeContent=" + meeContent
-				+ ", meeRecord=" + meeRecord + ", meeStartTime=" + meeStartTime + ", meeDuration=" + meeDuration
-				+ "]";
+				+ ", meeRecordName=" + meeRecordName + ", meeRecord=" + Arrays.toString(meeRecord) + ", meePar="
+				+ meePar + ", meeStartTime=" + meeStartTime + ", meeDuration=" + meeDuration + "]";
 	}
 	public Integer getMeeId() {
 		return meeId;
 	}
 	public void setMeeId(Integer meeId) {
 		this.meeId = meeId;
+	}
+	public String getMeeRecordName() {
+		return meeRecordName;
+	}
+	public void setMeeRecordName(String meeRecordName) {
+		this.meeRecordName = meeRecordName;
+	}
+	public Integer getMeePar() {
+		return meePar;
+	}
+	public void setMeePar(Integer meePar) {
+		this.meePar = meePar;
+	}
+	public Meeting(Integer meeId, MeetingRoom meeRoom, Employee meeSponsor, String meeApprovalStatus, String meeTopic,
+			String meeContent, String meeRecordName, byte[] meeRecord, Integer meePar, Date meeStartTime,
+			Integer meeDuration) {
+		super();
+		this.meeId = meeId;
+		this.meeRoom = meeRoom;
+		this.meeSponsor = meeSponsor;
+		this.meeApprovalStatus = meeApprovalStatus;
+		this.meeTopic = meeTopic;
+		this.meeContent = meeContent;
+		this.meeRecordName = meeRecordName;
+		this.meeRecord = meeRecord;
+		this.meePar = meePar;
+		this.meeStartTime = meeStartTime;
+		this.meeDuration = meeDuration;
+	}
+	public Meeting( MeetingRoom meeRoom, Employee meeSponsor,String meeTopic,
+			String meeContent, Date meeStartTime, Integer meeDuration) {
+		super();
+
+		this.meeRoom = meeRoom;
+		this.meeSponsor = meeSponsor;
+
+		this.meeTopic = meeTopic;
+		this.meeContent = meeContent;
+
+
+		this.meeStartTime = meeStartTime;
+		this.meeDuration = meeDuration;
 	}
 
 }

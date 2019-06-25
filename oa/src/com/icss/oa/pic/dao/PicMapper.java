@@ -3,7 +3,7 @@ package com.icss.oa.pic.dao;
 import com.icss.oa.pic.pojo.Pic;
 
 /**
- * 
+ * Í¼¿âÊı¾İ·ÃÎÊ
  * @author Administrator
  *
  */

@@ -30,7 +30,7 @@
 				<div class="form-group">
 					<label for="" class="col-md-2">会议发起人</label>
 					<div class="col-md-10">
-						<input type="button" id="empLoginName"  class="form-control"  />
+						<input readonly id="empLoginName"  class="form-control"  />
 					</div>					
 				</div>
 				<div class="form-group">
@@ -70,10 +70,15 @@
 
 
 				<div class="form-group">
-					<div class="col-md-offset-4 col-md-4">
+					<div class="col-md-offset-1 col-md-3">
 						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
 					</div>
-					<div class="col-md-4">
+					
+					<div class="col-md-offset-1 col-md-3">
+						<a href="QueryMeetingRoom.html"  class="btn btn-warning btn-block" >查询会议室</a>
+					</div>
+					
+					<div class="col-md-3">
 						<input type="button" id="addBtn" value="增加新会议" class="btn btn-primary btn-block" />
 					</div>
 				</div>	
@@ -118,7 +123,7 @@
 			.error(function(){
 				alert('请求会议室列表失败');				
 			});
-			
+				
 			
 			
 			//单击增加按钮
@@ -195,7 +200,7 @@
 					layer.msg('增加会议成功');
 					
 					setTimeout(function(){
-						location.href = 'QueryMeeting.html';//重定向画面
+						location.href = 'SearchMeeting.html';//重定向画面
 					},1000);
 				})
 				.fail(function(xhr,errorStatus,errorText){

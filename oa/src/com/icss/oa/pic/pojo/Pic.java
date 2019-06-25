@@ -3,15 +3,14 @@ package com.icss.oa.pic.pojo;
 import java.util.Arrays;
 import java.util.Date;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 /**
- * 图库实体类
+ * 图片实体类
  * 
  * @author Administrator
  *
  */
 public class Pic {
+
 	private Integer picId;
 
 	private String picName;
@@ -113,5 +112,5 @@ public class Pic {
 		return "Pic [picId=" + picId + ", picName=" + picName + ", picSize=" + picSize + ", picInfo=" + picInfo
 				+ ", picTime=" + picTime + ", picEmp=" + picEmp + ", picData=" + Arrays.toString(picData) + "]";
 	}
-		
+
 }

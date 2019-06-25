@@ -8,17 +8,16 @@
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
 		<link rel="stylesheet" href="../js/datetimepicker/jquery.datetimepicker.css" />
 	</head>
-	<body>
-		
+	<body>		
 		<div class="container">
 						
-			<form class="form-horizontal col-xs-12" id="form1">
+			<form class="form-horizontal col-md-12" id="form1">
 				<div class="form-group">
 					<label for="" class="col-xs-2">员工姓名</label>
 					<div class="col-xs-10">
 						<input type="text" id="empName" name="empName" placeholder="请输入员工姓名" class="form-control"/>
 					</div>					
-				</div>	
+				</div>
 				<div class="form-group">
 					<label for="" class="col-xs-2">员工登录名</label>
 					<div class="col-xs-10">
@@ -41,19 +40,13 @@
 				<div class="form-group">
 					<label for="" class="col-xs-2">出生日期</label>
 					<div class="col-xs-10">
-						<input type="text" id="empBirthdate" name="empBirthdate" placeholder="请选择日期" class="form-control"/>
+						<input type="text" id="empBirthday" name="empBirthday" class="form-control"/>
 					</div>					
-				</div>
+				</div>	
 				<div class="form-group">
-					<label for="" class="col-xs-2">手机号码</label>
+					<label for="" class="col-xs-2">电话号码</label>
 					<div class="col-xs-10">
 						<input type="text" id="empPhone" name="empPhone" placeholder="请输入手机号码" class="form-control"/>
-					</div>					
-				</div>
-				<div class="form-group">
-					<label for="" class="col-xs-2">公司邮箱</label>
-					<div class="col-xs-10">
-						<input readonly type="text" id="empEmail" name="empEmail" placeholder="请输入公司邮箱" class="form-control"/>
 					</div>					
 				</div>
 				<div class="form-group">
@@ -63,7 +56,13 @@
 					</div>					
 				</div>
 				<div class="form-group">
-					<label for="" class="col-xs-2">部门</label>
+					<label for="" class="col-xs-2">邮箱</label>
+					<div class="col-xs-10">
+						<input readonly type="text" id="empEmail" name="empEmail" placeholder="请输入邮箱" class="form-control"/>
+					</div>					
+				</div>
+				<div class="form-group">
+					<label for="" class="col-xs-2">选择部门</label>
 					<div class="col-xs-10">
 						<select name="dept.deptId" id="deptId" class="form-control">
 							<option value="">请选择部门</option>							
@@ -71,7 +70,7 @@
 					</div>					
 				</div>
 				<div class="form-group">
-					<label for="" class="col-xs-2">职务</label>
+					<label for="" class="col-xs-2">选择职务</label>
 					<div class="col-xs-10">
 						<select name="job.jobId" id="jobId" class="form-control">
 							<option value="">请选择职务</option>							
@@ -84,176 +83,192 @@
 						<textarea name="empInfo" id="empInfo" class="form-control"></textarea>
 					</div>					
 				</div>
-								
 				<div class="form-group">
-					<div class="col-md-offset-4 col-xs-4">
-						<input type="button" value="关闭" class="btn btn-warning btn-block" onclick="parent.layer.closeAll();"/>
-					</div>
-					<div class="col-xs-4">
-						<input type="button" id="updateBtn" value="修改" class="btn btn-primary btn-block" />
-						<input type="hidden" id="empId" name="empId" />
-					</div>
-				</div>	
-			</form>						
-		</div>			
-		
+					<div class="col-md-offset-4 col-md-4">						
+						<input type="button" value="关闭" class="btn btn-warning" onclick="parent.layer.closeAll()"/>
+						<input type="button" value="修改" class="btn btn-primary" id="updateBtn"/>
+						<input type="hidden" id="empId" name="empId"/>
+					</div>									
+				</div>
+			</form>			
+		</div>	
+				
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
-		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
 		<script type="text/javascript" src="../js/layer/layer.js" ></script>
 		<script type="text/javascript" src="../js/datetimepicker/jquery.datetimepicker.js" ></script>
 		<script type="text/javascript" src="../js/param.js" ></script>
-		
+				
 		<script>
 		
-		
+			
 			//动态生成部门列表（同步请求）
 			$.ajax({
-				url:baseUrl + "/dept/query", //请求url
-				type:'GET',  //请求方式 GET POST
-				dataType:'json', //响应的数据格式				
-				async:false	  //true表示异步请求
+				type:"get", //请求类型get post
+				url: baseUrl + "/dept/query", //请求url地址
+				async:false, //false默认表示同步请求
+				dataType:'json', //响应的数据类型				
 			})
-			.done(function(data,status,xhr){
-				$.each(data, function(index,el) {					
-					$('#deptId').append('<option value="' + el.deptId + '">' + el.deptName + '</option>');					
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//遍历数据集合
+				$.each(data, function(index,el) {				
+					$('#deptId').append('<option value="' + el.deptId + '" >' + el.deptName + '</option>');					
 				});
 			})
-			.fail(function(xhr,errorStatus,errorText){
-				layer.msg('请求失败！' + errorStatus + ',' + errorText);										
-			});	
-			
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll();//关闭加载
+			});		
+							
 			//动态生成职务列表（同步请求）
 			$.ajax({
-				url:baseUrl + "/job/query", //请求url
-				type:'GET',  //请求方式 GET POST
-				dataType:'json', //响应的数据格式				
-				async:false	  //true表示异步请求
+				type:"get", //请求类型get post
+				url: baseUrl + "/job/query", //请求url地址
+				async:false, //false默认表示同步请求
+				dataType:'json', //响应的数据类型				
 			})
-			.done(function(data,status,xhr){
-				$.each(data, function(index,el) {					
-					$('#jobId').append('<option value="' + el.jobId + '">' + el.jobName + '</option>');					
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//遍历数据集合
+				$.each(data, function(index,el) {				
+					$('#jobId').append('<option value="' + el.jobId + '" >' + el.jobName + '</option>');					
 				});
 			})
-			.fail(function(xhr,errorStatus,errorText){
-				layer.msg('请求失败！' + errorStatus + ',' + errorText);										
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);
+				layer.closeAll();//关闭加载
 			});
 			
-		
+			
 			//获得id
-			var empId = getParam('empId');
+			var empId = getParam('empId');			
 			//获得页码
 			var pageNum = getParam('pageNum');
 			
-			//查询员工数据，做表单回显
+			//根据id返回员工数据
 			$.getJSON(baseUrl + '/emp/get',{empId:empId},function(data){
 				
+				//表单回显
 				$('#empId').val(data.empId);
 				$('#empName').val(data.empName);
-				$('#empLoginName').val(data.empLoginName);
-				
-				var sexCheck = [];	
+				$('#empLoginName').val(data.empLoginName);				
+				var sexCheck = [];
 				sexCheck.push(data.empSex);				
 				$(':radio[name=empSex]').val(sexCheck);
-				
-				$('#empBirthdate').val(data.empBirthdate);
+				$('#empBirthday').val(data.empBirthday);
 				$('#empPhone').val(data.empPhone);
-				$('#empEmail').val(data.empEmail);
 				$('#empSal').val(data.empSal);
-				$('#empInfo').val(data.empInfo);
+				$('#empEmail').val(data.empEmail);
 				$('#deptId').val(data.dept.deptId);
 				$('#jobId').val(data.job.jobId);
+				$('#empInfo').val(data.empInfo);
 				
 			})
 			.error(function(){
 				alert('请求员工数据失败');				
-			});
-								
-			//绑定出生日期的日历控件
-			$('#empBirthdate').datetimepicker({
+			});			
+					
+				
+			// 给文本框绑定日历控件
+			$('#empBirthday').datetimepicker({
 				lang:'ch',
 				format:'Y-m-d',
 				formatDate:'Y-m-d',
 				timepicker:false
 			});	
-			
-			
+						
+								
+				
 			//单击修改按钮
 			$('#updateBtn').click(function(){
 				
-				//表单验证
+				//表单验证函数
 				function checkForm() {
 					
-					
-					//正则表达式
-					var r;
+					var r;//正则表达式					
 					
 					//员工姓名
 					var empName = $('#empName');
 					
 					if (empName.val() == '' || empName.val().length > 20) {
-						layer.msg('姓名不能为空且最多20字符');
+						layer.msg('员工姓名不能为空且最多20字符');
 						empName.focus();
 						return false;
 					}	
+											
 					
-					//登录名验证
-										
+					//确认密码
 					
 					//性别验证
 					var empSex = $(':radio[name=empSex]:checked');
 					
-					if(empSex.val() == undefined) {
-						layer.msg('请选择一个性别');						
+					if (empSex.val() == undefined) {
+						layer.msg('必须选择性别');						
+						return false;
+					}	
+					
+					
+					//出生日期
+					
+					
+					//手机号码验证
+					var empPhone = $('#empPhone');
+					
+					r = /^1[345678]\d{9}$/;
+					
+					if ( !r.test( empPhone.val() ) ) {
+						layer.msg('手机号码格式不正确');
+						empPhone.focus();
 						return false;
 					}
 					
-					//手机验证
+					//工资验证（验证是否和职务工资符合）
 					
 					
 					//邮箱验证
 					
 					
-					//工资（必须和职务相符）
+					//个人介绍
 					
 					
-					//部门
-					
-					
-					//职务
-					
-					
-					//个人简介
-					
-										
-					return true;
-				}					
+					return true;					
+				}				
 				
-				//调用表单验证
+//				调用表单验证
 				if ( !checkForm() )
 					return;	
+									
 					
-					
-				//调用后台接口增加数据
-				var url = baseUrl + '/emp/update';
+				//加载层
+				layer.load(2);
 				
-				//请求参数
+				//把表单的元素序列化为参数数据
 				var params = $('#form1').serialize();
-				
-				$.post(url,params,function(data){
-					layer.msg('修改员工成功');
+								
+				//发出ajax请求调用后端接口
+				$.ajax({
+					type:"post", //请求类型get post
+					url: baseUrl + "/emp/update", //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params   //请求参数数据
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('修改员工成功');	
 					
-					setTimeout(function(){							
-						window.parent.v.query(pageNum);
-						window.parent.layer.closeAll();	
+					setTimeout(function(){
+						window.parent.v.query(pageNum);//刷新当前页的数据
+						window.parent.layer.closeAll();
 					},500);
 				})
-				.error(function(){
-					alert('修改员工请求失败');				
-				});
-					
-			
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);
+					layer.closeAll();//关闭加载
+				});				
+				
 			});			
 		</script>
+		
 	</body>
 </html>

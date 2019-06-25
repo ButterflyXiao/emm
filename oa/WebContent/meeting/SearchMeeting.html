@@ -36,23 +36,24 @@
 							<option value="">会议室不限</option>							
 						</select>					
 					</div>	
+					<div class="form-group">
+						<label for="">会议审批状态</label>
+						<select name="meeApprovalStatus" id="meeApprovalStatus" class="form-control">
+							<option value="">审批状态不限</option>	
+							<option value="审批通过">审批通过</option>	
+							<option value="审批没通过">审批没通过</option>	
+							<option value="审批中">审批中</option>							
+						</select>					
+					</div>
 
 					<div class="form-group">
 						<label for="">会议主题</label>
 						<input type="text" name="meeTopic" id="meeTopic" placeholder="会议主题关键字" class="form-control" />					
 					</div>
-					<div class="form-group">
-						<label for="">会议审批状态</label>
-						<select name="meeApprovalStatus" id="meeApprovalStatus" class="form-control">
-							<option value="">审批状态不限</option>	
-							<option value="">审批通过</option>	
-							<option value="">审批没通过</option>	
-							<option value="">审批中</option>							
-						</select>					
-					</div>
 
 					<div class="form-group">
 						<input id="searchBtn" type="button" value="检索会议" class="btn btn-primary" />
+						<a href="SearchIndexMee.html" class="btn btn-info">切换到全文检索</a>
 					</div>	
 				</form>					
 						
@@ -78,7 +79,7 @@
 						<th>记录</th>
 						<th>开始时间</th>
 						<th>持续时间</th>
-						<th>参与人员</th>
+						<th>参会人员</th>
 						<th>操作</th>
 					</tr>
 				</thead>
@@ -90,10 +91,11 @@
 						<td>{{mee.meeApprovalStatus}}</td>
 						<td>{{mee.meeTopic}}</td>
 						<td>{{mee.meeContent}}</td>
-						<td>{{mee.meeRecord}}</td>
+						<td><a href="javascript:void(0);" @click="showFile(mee.meeId);" >{{mee.meeRecordName}}</a></td>
 						<td>{{mee.meeStartTime}}</td>
 						<td>{{mee.meeDuration}}</td>
-						<td>暂无</td>
+						<td>{{mee.meePar}}/{{mee.meeRoom.roomSize}}{{mee.meePar==mee.meeRoom.roomSize?'(满员)':''}}</td>
+						
 						<td>
 							<div class="dropdown">				
 								<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
@@ -103,8 +105,9 @@
 								<ul class="dropdown-menu">
 									<li><a href="javascript:void(0);" @click="showDetails(mee.meeId);">修改/查询详细</a></li>
 									<li><a href="javascript:void(0);" @click="del(mee.meeId);">删除</a></li>
-									<li><a href="javascript:void(0);">XXX</a></li>
-									<li><a href="javascript:void(0);">XXX</a></li>
+									<li><a href="javascript:void(0);" @click="addPar(mee.meeId);">增删员工</a></li>
+									<li v-if="mee.meeRecordName!='无'"><a href="javascript:void(0);" @click="download(mee.meeId);">下载会议记录</a></li>
+									<li><a href="javascript:void(0);" @click="setApproval(mee.meeId);">审批</a></li>
 								</ul>				
 							</div>
 						</td>
@@ -142,7 +145,7 @@
 				</div>
 			</div>
 						
-		</div>			
+		</div>
 		
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
@@ -196,8 +199,9 @@
 							pageSize:10,
 							roomId:roomCond,
 							meeTopic:topicCond,
-							meeApprocalStatus:statusCond,
+							meeApprovalStatus:statusCond,
 						};
+
 							
 						//ajax调用后台接口	
 						$.ajax({
@@ -252,6 +256,18 @@
 						});
 						
 					},
+										
+					addPar:function(meeId) { //修改或显示详细员工信息
+						
+								// 利用iframe加载其他网页内容到页面层 type:2
+						layer.open({
+							title:'选择员工',
+						    type: 2, 				   
+						    area: ['800px','900px'], //宽高
+						    content: '../meeting/EmpModal.html?meeId=' + meeId+ '&pageNum=' + v.pager.pageNum
+						});	
+						
+					},
 					
 					del:function(meeId){
 						
@@ -270,14 +286,102 @@
 							layer.msg('删除会议请求失败');
 						});						
 						
-					}
+					},
 					
+					download:function(meeId){
+						
+						var flag = window.confirm("确定要下载此会议记录吗");
+						
+						if (!flag)
+							return;
+						
+						window.location.href =baseUrl + '/meeting/download?meeId=' + meeId;
+//						$.get(baseUrl + '/meeting/download',{meeId:meeId},function(data) {
+//							layer.msg('下载会议记录成功');							
+//							v.query(v.pager.pageNum);
+//						})
+//						.error(function(){
+//							layer.msg('下载会议记录失败');
+//						});						
+//							
+					},
+
+
+
+
+					showFile:function(meeId){
+						var formData = new FormData();
+						
+						formData.append('meeId',meeId);
+
+					
+						 $.ajax({
+						     type: "post",
+						     url: baseUrl + '/meeting/showFile',
+						     async: false,
+						     dataType: "json",
+						     data: formData,
+						     contentType: false,
+						     processData: false,
+						     success: function (result) {
+
+						    	if (meeId != "0") {
+//						    		$('#name').text(result.meeRecordName);
+//						  			document.getElementById('myFrame').src = 
+//						                              '../' + meeId + '.html';
+//						            $('#date').text(result.meeRecord);
+//						            myStyle();
+//						            YLID = meeId;
+						            
+									layer.open({
+										title:'预览',
+									    type: 2, 				   
+									    area: ['800px','900px'], //宽高
+									    content: '../' + meeId + '.html'
+									});	
+
+						           }
+						       },
+						 });
+					},
+					setApproval:function(meeId) { //修改审批状态
+						
+						// 利用iframe加载其他网页内容到页面层 type:2
+						layer.open({
+							title:'修改审批状态',
+						    type: 2, 				   
+						    area: ['600px', '800px'], //宽高
+						    content: 'SetMeeApproval.html?meeId=' + meeId+ '&pageNum=' + v.pager.pageNum
+						});
+						
+					},
+
+
 				}
 			});					
 			
 			//调用查询方法
-			v.query(1);	
-			
+//			v.query(1);	
+//			function myStyle() {
+//			     $("#main").width(960);
+//			     $("#main").height($('#WordPreview').height() - 100);
+//			     $('#content').height($('#main').height() - 50);
+//			     $('#myFrame').width(580);
+//			 }
+//			
+//			
+						//单击选择按钮
+			$('#selectBtn').click(function(){
+				
+				// 利用iframe加载其他网页内容到页面层 type:2
+				layer.open({
+					title:'选择员工',
+				    type: 2, 				   
+				    area: ['800px','900px'], //宽高
+				    content: 'EmpModal.html'
+				});	
+				
+			});	
 						
 			//搜索按钮单击
 			$('#searchBtn').click(function(){
@@ -286,7 +390,7 @@
 				roomCond = $('#roomId').val();
 				topicCond = $('#meeTopic').val();
 				statusCond = $('#meeApprovalStatus').val();
-				
+
 				//调用查询方法
 				v.query(1);	
 			});

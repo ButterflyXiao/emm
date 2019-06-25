@@ -6,55 +6,47 @@
 		<meta charset="UTF-8">
 		<title></title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
-		
 		<style>
-			.head-div {
+			#head-div {
 				width: 200px;
 				height: 200px;
 				border: 1px solid orange;
 				overflow: hidden;
 				border-radius: 50%;
-			}			
+			}	
+			
 		</style>
 	</head>
-	<body>
-		
-		<div class="head-div">
-			<img id="empPhoto" src="../images/liudehua.jpg" width="100%"/>			
-		</div>
-		
-		<div>
-			欢迎你，<span id="empLoginName"></span>
-		</div>
-		
-		
+	<body>		
+		<div class="container">
+			
+			<div id="head-div">
+				<img id="empPhoto" src="../images/liudehua.jpg" width="100%" class="img-responsive"/>
+			</div>
+			
+		</div>	
+				
 		<script type="text/javascript" src="../js/jquery.js" ></script>
 		<script type="text/javascript" src="../js/global.js" ></script>
-		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>	
+		<script type="text/javascript" src="../js/bootstrap/js/bootstrap.js" ></script>
 		<script type="text/javascript" src="../js/layer/layer.js" ></script>
-		<script>			
+				
+		<script>
 			
-			//查询头像
 			$.get(baseUrl + '/emp/queryHead',function(data){
 				
-				$('#empPhoto').attr('src',data);
+				//如果用户有头像，显示头像，否则显示默认头像
+				if (data == null || data == '')
+					return;
+				
+				$('#empPhoto').attr('src',data);				
 				
 			})
 			.error(function(){
-				layer.msg('请求错误');
+				layer.msg('请求头像失败');				
 			});
-			
-			//查询用户名
-			$.get(baseUrl + '/emp/getLoginName',function(data){
-				
-				$('#empLoginName').html(data);
-				
-			})
-			.error(function(){
-				layer.msg('请求错误');
-			});
-			
 			
 		</script>
+		
 	</body>
 </html>

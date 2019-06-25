@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.icss.oa.meeting.dao.MeetingParticipantRecordMapper">
+
+	<resultMap id="BaseResultMap" type="com.icss.oa.meeting.pojo.MeetingParticipantRecord">
+	
+		<association property="mee" javaType="com.icss.oa.meeting.pojo.Meeting">
+			<id column="mee_id" property="meeId" jdbcType="INTEGER" />
+			<result column="mee_approval_status" property="meeApprovalStatus" jdbcType="VARCHAR" />
+			<result column="mee_topic" property="meeTopic" jdbcType="VARCHAR" />
+			<result column="mee_content" property="meeContent" jdbcType="VARCHAR" />
+			<result column="mee_start_time" property="meeStartTime" jdbcType="TIMESTAMP" />
+			<result column="mee_duration" property="meeDuration" jdbcType="INTEGER" />	
+			<result column="mee_record_name" property="meeRecordName" jdbcType="VARCHAR" />
+			<result column="mee_par" property="meePar" jdbcType="INTEGER" />
+				
+			<association property="meeRoom" javaType="com.icss.oa.meeting.pojo.MeetingRoom">
+				<id column="room_id" property="roomId" jdbcType="INTEGER" />
+				<result column="room_place" property="roomPlace" jdbcType="VARCHAR" />
+			</association>
+			
+		</association>
+		<association property="emp" javaType="com.icss.oa.system.pojo.Employee">
+			<id column="emp_id" property="empId" jdbcType="INTEGER" />
+			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		</association>
+
+	</resultMap>
+
+	<resultMap id="EmpResultMap" type="com.icss.oa.system.pojo.Employee">
+		<id column="emp_id" property="empId" jdbcType="INTEGER" />
+		<result column="emp_name" property="empName" jdbcType="VARCHAR" />
+		<result column="emp_login_name" property="empLoginName"
+			jdbcType="VARCHAR" />
+		<result column="emp_pwd" property="empPwd" jdbcType="VARCHAR" />
+		<result column="emp_sex" property="empSex" jdbcType="VARCHAR" />
+		<result column="emp_birthday" property="empBirthday" jdbcType="DATE" />
+		<result column="emp_phone" property="empPhone" jdbcType="VARCHAR" />
+		<result column="emp_email" property="empEmail" jdbcType="VARCHAR" />
+		<result column="emp_sal" property="empSal" jdbcType="INTEGER" />
+		<result column="emp_info" property="empInfo" jdbcType="VARCHAR" />
+		<!-- 多对一关系映射，必须写在resultMap最后面 -->
+	</resultMap>
+	<insert id="insert" parameterType="com.icss.oa.meeting.pojo.MeetingParticipantRecord">
+
+		INSERT INTO meeting_participant_record(rec_meeting_id,par_id) 
+		SELECT #{mee.meeId,jdbcType=INTEGER},#{emp.empId,jdbcType=INTEGER} 
+		FROM DUAL  
+		WHERE NOT EXISTS
+		(SELECT * 
+			FROM meeting_participant_record 
+			WHERE rec_meeting_id = #{mee.meeId,jdbcType=INTEGER} 
+			AND par_id=#{emp.empId,jdbcType=INTEGER})
+		
+	</insert>
+	
+
+	
+	<delete id="delete" parameterType="com.icss.oa.meeting.pojo.MeetingParticipantRecord">
+		delete from meeting_participant_record 
+		where rec_meeting_id=#{mee.meeId,jdbcType=INTEGER} 
+		AND
+		 par_id=#{emp.empId,jdbcType=INTEGER}
+	</delete>
+	
+	<select id="queryByMeeId" parameterType="java.lang.Integer" resultMap="EmpResultMap">
+		SELECT emp.*
+		FROM meeting_participant_record rec
+		RIGHT OUTER JOIN employee emp on rec.`par_id`=emp.`emp_id`
+		WHERE rec_meeting_id=#{mee.meeId,jdbcType=INTEGER} 
+	</select> 
+	
+	<select id="getCountByMeeId" parameterType="java.lang.Integer"  resultType="java.lang.Integer">
+		SELECT count(*)
+		FROM meeting_participant_record m
+		WHERE rec_meeting_id=#{mee.meeId,jdbcType=INTEGER} 
+	</select> 
+
+	<select id="queryByEmpId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		SELECT m.*
+		FROM meeting_participant_record m
+		WHERE par_id=#{emp.empId,jdbcType=INTEGER} 
+	</select> 
+	
+	<select id="queryMeeByParId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select m.*,r.*,e.*
+		from meeting_participant_record mp
+		LEFT OUTER JOIN meeting m ON m.`mee_id`=mp.`rec_meeting_id`		
+		LEFT OUTER JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
+		LEFT OUTER JOIN employee e ON mp.`par_id`=e.`emp_id` 
+		where  par_id=#{emp.empId,jdbcType=INTEGER} 
+		order by m.`mee_start_time` desc
+	</select>
+
+
+</mapper>

@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.icss.oa.system.dao.JobMapper">
 
+	<!-- 结果集映射 -->
 	<resultMap id="BaseResultMap" type="com.icss.oa.system.pojo.Job">
 		<id column="job_id" property="jobId" jdbcType="INTEGER" />
 		<result column="job_name" property="jobName" jdbcType="VARCHAR" />
@@ -35,7 +36,7 @@
 		where job_id =
 		#{jobId,jdbcType=INTEGER}
 	</delete>
-	
+		
 	<select id="queryById" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">
 		select *		
@@ -45,7 +46,7 @@
 	
 	<select id="query" resultMap="BaseResultMap">
 		select *		
-		from job		
+		from job order by job_id		
 	</select>
 
 </mapper>

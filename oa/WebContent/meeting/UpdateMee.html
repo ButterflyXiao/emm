@@ -64,6 +64,13 @@
 				</div>
 
 				<div class="form-group">
+					<label for="" class="col-xs-2">会议记录文件名</label>
+					<div class="col-xs-10">
+						<input readonly id="meeRecordName" name="meeRecordName" placeholder="请输入会议记录文件名内容" class="form-control"/>
+					</div>					
+				</div>
+				
+				<div class="form-group">
 					<label for="" class="col-xs-2">选择会议记录文件</label>
 					<div class="col-xs-10">
 						<input type="file" id="meeRecord" name="meeRecord" placeholder="请选择会议记录文件" class="form-control"/>
@@ -78,15 +85,17 @@
 						<input type="button" id="updateBtn" value="修改" class="btn btn-primary btn-block" />
 						<input type="hidden" id="meeId" name="meeId" />
 					</div>
-					<div class="form-group">					
+					<!--<div class="form-group">					
 						<div class="col-sm-8 col-sm-offset-2">
 							<div class="progress" style="display: none;">
 					        	<div id="son" class="progress-bar progress-bar-success progress-bar-striped active" style="width:0%;"> 
 					        		0%
 					            </div>        
 					        </div>
-					    </div>
-					</div>
+					        
+					        <img id="previewImg" src="" alt="" class="img-responsive" />				        
+						</div>
+					</div>-->
 				</div>	
 			</form>						
 		</div>			
@@ -130,13 +139,15 @@
 				$('#meeId').val(data.meeId);
 				$('#empId').val(data.meeSponsor.empId);
 				$('#roomId').val(data.meeRoom.roomId);
+				$('#meeRecordName').val(data.meeRecordName);
+				
 				
 				$('#meeStartTime').val(data.meeStartTime);
 				$('#meeDuration').val(data.meeDuration);
 				$('#meeApprovalStatus').val(data.meeApprovalStatus);
 				$('#meeTopic').val(data.meeTopic);
 				$('#meeContent').val(data.meeContent);
-				$('#meeRecord').val(data.meeRecord);
+//				$('#meeRecord').val(data.meeRecord);
 				
 			})
 			.error(function(){
@@ -152,25 +163,30 @@
 
 			//选择文件后进行事件处理
 			$('#meeRecord').change(function(){
-				
+
 				//文件对象
 				var file = this.files[0];
-				
-				//判断是否是图片类型
-				if(file.type.match(/image/) == null) {
-					layer.msg('请选择一个图片类型的文件');
+				alert(file.type);
+				//判断是否是图片类型				
+				if((file.type!="application/msword")&&(file.type!="application/vnd.openxmlformats-officedocument.wordprocessingml.document")) {
+					layer.msg('请选择一个文档类型的文件');
 					this.value = '';
 					return false;
 				}
-									
-				//判断文件大小
+				
+				//判断文件大小				
 				if (file.size > 1024 * 1024) {
-					layer.msg('图片大小不能超过1M');
+					layer.msg('会议记录大小不能超过1M');
 					this.value = '';
 					return false;
 				}
-							
 				
+				var str=$('#meeRecord').val();
+				var arr=str.split('\\');//注split可以用字符或字符串分割
+				var meeRecordName=arr[arr.length-1];//这就是要取得的图片名称 
+				$('#meeRecordName').val(meeRecordName);
+				
+			
 			});	
 			//单击修改按钮
 			$('#updateBtn').click(function(){
@@ -193,6 +209,13 @@
 					return false;
 				}
 
+				var meeStartTime = $('#meeStartTime');
+				
+				if (meeStartTime.val() == '' ||meeStartTime.val()==null ) {
+					layer.msg('会议开始时间不能为空');
+					meeStartTime.focus();
+					return false;
+				}
 				//验证会议名称
 				var meeTopic = $('#meeTopic');
 				
@@ -214,15 +237,20 @@
 
 				var file = $('#meeRecord').get(0).files[0];
 				
+				alert(file);
+				var meeRecordName=$('#meeRecordName');
+				
 				//判断是否选择了文件
 				if (file == undefined) {
 					layer.msg('请先选择一个文件');
 					$('#meeRecord').focus();
 					return false;
 				}
-//					var empId=$('#empId');
-//					var meeStartTime=$('#meeStartTime');
-//					var meeApprovalStatus=$('#meeApprovalStatus');
+					var empId=$('#empId');
+					var meeStartTime=$('#meeStartTime');
+					var meeApprovalStatus=$('#meeApprovalStatus');
+					var meeId=$('#meeId');
+
 				//显示进度条
 				$('.progress').show();
 				
@@ -230,17 +258,22 @@
 				var formData = new FormData();	
 				//添加表单数据
 				formData.append('meeRecord',file);
-				formData.append('meeSponsor.empId',empId.val());
-//					formData.append('meeRoom.roomId',roomId.val());
-//					formData.append('meeStartTime',meeStartTime);
-//					formData.append('meeDuration',meeDuration.val());
-//					formData.append('meeApprovalStatus',meeApprovalStatus.val());
-//					formData.append('meeTopic',meeTopic.val());
-//					formData.append('meeContent',meeContent.val());
+				formData.append('meeRecordName',meeRecordName.val());
+				
+				formData.append('empId',empId.val());
+				formData.append('meeId',meeId.val());
+
+				formData.append('roomId',roomId.val());
+				formData.append('meeStartTime',meeStartTime.val());
+				formData.append('meeDuration',meeDuration.val());
+				formData.append('meeApprovalStatus',meeApprovalStatus.val());
+				formData.append('meeTopic',meeTopic.val());
+				formData.append('meeContent',meeContent.val());
+//					alert(meeStartTime.val());
 //					alert(formData.toString());					
 							
 				
-				var params = $('#form1').serialize();
+//				var params = $('#form1').serialize();
 
 				$.ajax({
 					url:baseUrl + '/meeting/update',
@@ -250,6 +283,7 @@
 					contentType:false,  //必须设置false
 					xhr:function() {
 						//获得XMLHttpRquest对象
+//						alert(data.meeRecord);
 						var xhr = $.ajaxSettings.xhr();
 						//如果浏览器支持上传进度事件，增加上传进度事件回调
 						if (xhr.upload) {	
@@ -261,6 +295,7 @@
 					}
 				})
 				.done(function(){
+					
 					layer.msg('修改会议成功');			
 					setTimeout(function(){							
 						window.parent.v.query(pageNum);

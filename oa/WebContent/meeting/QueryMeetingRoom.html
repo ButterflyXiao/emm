@@ -43,15 +43,18 @@
 				</thead>
 				<tbody>
 					<tr v-for="(room,index) in meeRoomData">
-						<td>{{room.roomId}}</td>
-						<td>{{room.roomPlace}}</td>
-						<td>{{room.isReservation}}</td>
-						<td>{{room.roomSize}}</td>
-						<td>{{room.hasAirConditoning}}</td>
-						<td>
-							<a :href="'UpdateMeetingRoom.html?roomId=' + room.roomId" class="btn btn-warning btn-xs">修改</a>
-							<input type="button" value="删除" class="btn btn-danger btn-xs" @click="del(room.roomId,index);"/>
-						</td>
+						 <template  v-for='(meeting, indexs) in meeData'  v-if='indexs == index'>
+							<td>{{room.roomId}}</td>
+							<td>{{room.roomPlace}}</td>
+							<td><font color="#0066ff">{{meeting==null?'暂无预约状态':meeting.meeStartTime}}</font></td>
+							<td>{{room.roomSize}}</td>
+							<td>{{room.hasAirConditoning?'是':'否'}}</td>
+							<td>
+								<a :href="'UpdateMeetingRoom.html?roomId=' + room.roomId" class="btn btn-warning btn-xs">修改</a>
+								<input type="button" value="删除" class="btn btn-danger btn-xs" @click="del(room.roomId,index);"/>
+								<a href="javascript:void(0);" @click="showHistory(room.roomId);" class="btn btn-warning btn-xs">预约历史</a>
+							</td>
+						</template>
 					</tr>	
 				</tbody>
 			</table>
@@ -74,13 +77,14 @@
 			var v = new Vue({
 				el:'.container', //绑定数据的范围
 				data: {          //数据模型
-					meeRoomData:[]
+					meeRoomData:[],
+					meeData:[]
 				},
 				methods:{  //声明方法
 					query:function() { //查询方法
 						
 						//请求地址
-						var url = baseUrl + '/room/query';
+						var url = baseUrl + '/room/getLast';
 						
 						//通过表单序列化形成请求参数
 						var params = {};
@@ -95,7 +99,8 @@
 						})
 						.done(function(data,status,xhr){
 							//把响应的数据赋值到数据模型
-							v.meeRoomData = data;							
+							v.meeRoomData = data.roomList;	
+							v.meeData=data.lastMeeList;
 						})
 						.fail(function(xhr,errorStatus,errorText){
 							layer.msg('请求失败！' + errorStatus + ',' + errorText);										
@@ -135,13 +140,26 @@
 						});
 						
 						
-					}
+					},
+					
+					showHistory:function(roomId) { //修改或显示详细员工信息
+						
+						// 利用iframe加载其他网页内容到页面层 type:2
+						layer.open({
+							title:'会议详细信息',
+						    type: 2, 				   
+						    area: ['800px', '800px'], //宽高
+						    content: 'QueryMeetingByRoom.html?roomId=' + roomId
+						});
+						
+					},
 				}
 			});		
 			
 			
 			//调用查询方法
 			v.query();
+			
 			
 			
 		</script>	

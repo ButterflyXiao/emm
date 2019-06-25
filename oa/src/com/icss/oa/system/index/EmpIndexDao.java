@@ -34,12 +34,6 @@ import org.springframework.stereotype.Repository;
 
 import com.icss.oa.system.pojo.Employee;
 
-/**
- * 员工全文检索
- * 
- * @author Administrator
- *
- */
 @Repository
 public class EmpIndexDao {
 
@@ -111,12 +105,12 @@ public class EmpIndexDao {
 	}
 
 	/**
-	 * 全文检索查询
+	 * 全文检索
 	 * 
 	 * @throws IOException
 	 * @throws InvalidTokenOffsetsException 
 	 */
-	public List<Employee> query(Query query) throws IOException, InvalidTokenOffsetsException {
+	public List<Employee> search(Query query) throws IOException, InvalidTokenOffsetsException {
 
 		// 设置索引的分词器
 		IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_47, analyzer);
@@ -130,7 +124,7 @@ public class EmpIndexDao {
 		// 过滤对象(附加的删选条件，效率比较低，因为需要二次遍历数据)
 		Filter filter = null;
 
-		// 排序对象（默认按照相关度排序，就是匹配的越多越靠前，类似于）
+		// 排序对象（默认按照相关度排序，就是匹配的越多越靠前，类似于百度）
 		Sort sort = new Sort();
 
 		// 得到满足条件的前100行记录
@@ -144,16 +138,15 @@ public class EmpIndexDao {
 
 		// ============高亮和截取某个字段的文本摘要设置=============
 		// 设置环绕的首尾字符串
-		SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<font color=red><b>", "</b></font>");
+		SimpleHTMLFormatter formatter = new SimpleHTMLFormatter("<font color=red>", "</font>");
 		// 语法高亮显示设置
 		Highlighter highlighter = new Highlighter(formatter, new QueryScorer(query));
 		// 100是是表示摘要的字数
 		highlighter.setTextFragmenter(new SimpleFragmenter(100));
 		// ===================================================
 
-		// 遍历文档数据
+		// 遍历文档
 		for (int i = 0; i < recordCount; i++) {
-
 			// 获得原始文档
 			ScoreDoc scoreDoc = topDocs.scoreDocs[i];
 			// 获得文档内部编号
@@ -174,29 +167,30 @@ public class EmpIndexDao {
 			TokenStream tream = analyzer.tokenStream("empInfo",	new StringReader(empInfo));
 			String empInfoFragment = highlighter.getBestFragment(tream, empInfo);
 			
+			//把姓名增加高亮
+			tream = analyzer.tokenStream("empName",	new StringReader(empName));
+			String empNameFragment = highlighter.getBestFragment(tream, empName);
+			
 			//如果内容没有包含搜索关键字或原始内容不足100字
 			if (empInfoFragment == null) {
 				int minLen = empInfo.length() >= 100 ? 100 : empInfo.length();
 				empInfoFragment = empInfo.substring(0, minLen);				
 			}		
 			
-			//把员工姓名进行截取摘要以及添加高亮
-			tream = analyzer.tokenStream("empName",new StringReader(empName));
-			String empNameFragment = highlighter.getBestFragment(tream, empName);
-			
-			//如果内容没有包含搜索关键字或原始内容不足100字
 			if (empNameFragment == null) {
 				int minLen = empName.length() >= 100 ? 100 : empName.length();
 				empNameFragment = empName.substring(0, minLen);				
-			}	
-
-			// 封装数据到pojo
+			}
+			
+			// 封装到Employee对象
 			Employee emp = new Employee();
+
 			emp.setEmpId(empId);
 			emp.setEmpName(empNameFragment);
 			emp.setEmpPhone(empPhone);
 			emp.setEmpInfo(empInfoFragment);
 
+			// 放到集合中
 			empList.add(emp);
 		}
 

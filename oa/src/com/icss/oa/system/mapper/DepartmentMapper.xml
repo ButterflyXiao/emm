@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.icss.oa.system.dao.DepartmentMapper">
 
-	<!-- 查询结果集 -->
+	<!-- 查询结果集映射 -->
 	<resultMap id="BaseResultMap" type="com.icss.oa.system.pojo.Department">
 		<id column="dept_id" property="deptId" jdbcType="INTEGER" />
 		<result column="dept_name" property="deptName" jdbcType="VARCHAR" />
@@ -30,6 +30,10 @@
 	</select>
 	
 	<select id="query" resultMap="BaseResultMap">
+		select * from department order by dept_id
+	</select>
+	
+	<select id="query2" resultType="java.util.Map">
 		select * from department order by dept_id
 	</select>
 

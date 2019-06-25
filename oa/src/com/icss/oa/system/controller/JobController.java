@@ -23,51 +23,51 @@ public class JobController {
 	
 	@Autowired
 	private JobService service;
-
+	
 	/**
 	 * 增加部门
 	 * @param request
 	 * @param response
-	 * @param Job
+	 * @param job
 	 */
 	@RequestMapping("/job/add")
-	public void add(HttpServletRequest request,HttpServletResponse response,Job Job) {
-		service.addJob(Job);
+	public void add(HttpServletRequest request,HttpServletResponse response,Job job) {
+		service.addJob(job);
 	}
 	
 	/**
 	 * 修改部门
 	 * @param request
 	 * @param response
-	 * @param Job
+	 * @param job
 	 */
 	@RequestMapping("/job/update")
-	public void update(HttpServletRequest request,HttpServletResponse response,Job Job) {
-		service.updateJob(Job);
+	public void update(HttpServletRequest request,HttpServletResponse response,Job job) {
+		service.updateJob(job);
 	}
 	
 	/**
 	 * 删除部门
 	 * @param request
 	 * @param response
-	 * @param Job
+	 * @param job
 	 */
 	@RequestMapping("/job/delete")
-	public void delete(HttpServletRequest request,HttpServletResponse response,Integer jobId) {
+	public void update(HttpServletRequest request,HttpServletResponse response,Integer jobId) {
 		service.deleteJob(jobId);
 	}
 	
 	/**
-	 * 根据id查询部门
+	 * 通过id查询部门
 	 * @param request
 	 * @param response
-	 * @param Job
+	 * @param job
 	 */
 	@RequestMapping("/job/get")
 	@ResponseBody
 	public Job get(HttpServletRequest request,HttpServletResponse response,Integer jobId) {
 		return service.queryJobById(jobId);
-	}	
+	}
 	
 	/**
 	 * 查询部门
@@ -78,9 +78,7 @@ public class JobController {
 	@RequestMapping("/job/query")
 	@ResponseBody
 	public List<Job> query(HttpServletRequest request,HttpServletResponse response) {
-		
 		return service.queryJob();
 	}
-	
-	
+
 }

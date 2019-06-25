@@ -7,8 +7,7 @@
 		<title></title>
 		<link rel="stylesheet" href="../js/bootstrap/css/bootstrap.css" />
 	</head>
-	<body>
-		
+	<body>		
 		<div class="container">
 			
 			<ol class="breadcrumb">
@@ -28,7 +27,7 @@
 					<div class="col-md-10">
 						<input type="text" id="deptName" name="deptName" placeholder="请输入部门名称" class="form-control"/>
 					</div>					
-				</div>	
+				</div>
 				<div class="form-group">
 					<label for="" class="col-md-2">部门描述</label>
 					<div class="col-md-10">
@@ -36,15 +35,15 @@
 					</div>					
 				</div>
 				<div class="form-group">
-					<div class="col-md-offset-4 col-md-4">
+					<div class="col-md-offset-4 col-md-4">						
 						<input type="button" value="返回" class="btn btn-warning btn-block" onclick="history.back();"/>
 					</div>
 					<div class="col-md-4">
-						<input type="button" id="updateBtn" value="修改部门" class="btn btn-primary btn-block" />
-						<input type="hidden" id="deptId" name="deptId" />
-					</div>
-				</div>	
-			</form>						
+						<input type="hidden" value="1" id="deptId" name="deptId" />
+						<input type="button" value="修改" class="btn btn-primary btn-block" id="updateBtn"/>
+					</div>				
+				</div>
+			</form>			
 		</div>			
 		
 		<script type="text/javascript" src="../js/jquery.js" ></script>
@@ -54,78 +53,65 @@
 		<script type="text/javascript" src="../js/param.js" ></script>
 		
 		<script>
-			//获得传递的id
+			//获得参数id
 			var deptId = getParam('deptId');
 			
-			//用ajax调用后端接口
-			$.getJSON(baseUrl + '/dept/get',{deptId:deptId},function(data){				
-				//表单回显数据
+			//发出ajax请求调用后端接口
+			var url = baseUrl + "/dept/get";
+			
+			$.ajax({
+				type:"get", //请求类型get post
+				url: url, //请求url地址
+				async:true, //true默认表示异步请求
+				dataType:'json', //响应的数据类型
+				data:{deptId:deptId} //传递的请求参数
+			})
+			.done(function(data,status,xhr){ //请求成功回调函数
+				//表单数据回显
 				$('#deptName').val(data.deptName);
 				$('#deptInfo').val(data.deptInfo);
-				$('#deptId').val(data.deptId);				
+				$('#deptId').val(data.deptId);			
 			})
-			.error(function(){
-				alert('请求部门数据失败');				
-			});
+			.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+				alert(errorStatus + ',' + errorText);				
+			});	
 			
-			
-			//修改按钮单击
-			$('#updateBtn').click(function(){
-				
-				//表单验证
-				function checkForm() {
-					
-					//验证部门名称
-					var deptName = $('#deptName');
-					
-					if (deptName.val() == '' || deptName.val().length > 20 ) {
-						layer.msg('部门名称不能为空且最多20字符');
-						deptName.focus();
-						return false;
-					}
-					
-					//验证部门描述
-					var deptInfo = $('#deptInfo');
-					
-					if (deptInfo.val() == '' || deptInfo.val().length > 20 ) {
-						layer.msg('部门描述不能为空且最多20字符');
-						deptInfo.focus();
-						return false;
-					}
-										
-					return true;
-				}					
-				
-				//调用表单验证
-				if ( !checkForm() )
-					return;				
-				
+						
+			//单击修改按钮
+			$('#updateBtn').click(function() {
 				
 				//加载层
 				layer.load(2);
 				
-				//请求url
-				var url = baseUrl + '/dept/update';
+				//发出ajax请求调用后端接口
+				var url = baseUrl + "/dept/update";
 				
 				//请求参数
 				var params = $('#form1').serialize();
 				
-				//ajax调用后台
-				$.post(url,params,function(data){
-					layer.closeAll();//关闭层
-					layer.msg('部门修改成功');
+				$.ajax({
+					type:"post", //请求类型get post
+					url: url, //请求url地址
+					async:true, //true默认表示异步请求
+					dataType:'text', //响应的数据类型
+					data:params //传递的请求参数
+				})
+				.done(function(data,status,xhr){ //请求成功回调函数
+					layer.closeAll();//关闭加载
+					layer.msg('修改部门成功');	
 					
 					setTimeout(function(){
-						location.href = 'QueryDept.html';//重定向画面
-					},1000);
+						location.href = 'QueryDept.jsp';//重定向到查询画面
+					},1000);		
 				})
-				.error(function(){
-					alert('更新部门数据失败');				
-				});								
+				.fail(function(xhr,errorStatus,errorText){ //请求失败回调函数
+					alert(errorStatus + ',' + errorText);				
+				});									
 				
-			});			
-			
+			});
+						
 		</script>
+		
 		
 	</body>
 </html>

@@ -15,17 +15,17 @@ import com.icss.oa.pic.pojo.Pic;
 @Service
 @Transactional(rollbackFor=Exception.class)
 public class PicService {
-	
+
 	@Autowired
 	private PicMapper mapper;
 	
 	public void addPic(Pic pic) {
 		mapper.insert(pic);
-	}
+	}	
 	
 	@Transactional(readOnly=true)
-	public Pic queryById(Integer picId) {
+	public Pic queryPicById(Integer picId) {
 		return mapper.queryById(picId);
 	}
-	
+		
 }

@@ -1,6 +1,7 @@
 package com.icss.oa.system.service;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class EmployeeService {
 	private EmpIndexDao indexDao;
 
 	/**
-	 * 登录验证 返回1 用户名不存在 2密码错误 3登录成功
+	 * 登录验证 返回1 用户名不存在 2 密码错误 3 登录成功
 	 */
 	@Transactional(readOnly = true)
 	public int checkLogin(String empLoginName, String empPwd) {
@@ -63,16 +64,17 @@ public class EmployeeService {
 	 * 增加员工
 	 */
 	public void addEmp(Employee emp) {
+
+		// 插入数据库
 		mapper.insert(emp);
 
-		// 索引
-		try {
-			// 获得自动生成的id
-			int empId = mapper.getLastInsertId();
+		// 获得插入员工的自动编号
+		int empId = mapper.getLastInsertId();
 
+		try {
+			/********** 生成索引 *************/
 			// 创建索引文档
 			Document document = new Document();
-
 			document.add(new TextField("empId", String.valueOf(empId), Store.YES));
 			document.add(new TextField("empName", emp.getEmpName(), Store.YES));
 			document.add(new TextField("empPhone", emp.getEmpPhone(), Store.YES));
@@ -80,7 +82,7 @@ public class EmployeeService {
 
 			// 调用索引dao
 			indexDao.create(document);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -89,6 +91,7 @@ public class EmployeeService {
 	 * 修改员工
 	 */
 	public void updateEmp(Employee emp) {
+
 		mapper.update(emp);
 
 		// 索引
@@ -130,15 +133,8 @@ public class EmployeeService {
 	 */
 	@Transactional(readOnly = true)
 	public List<Employee> queryEmpByPage(Pager pager) {
-		return mapper.queryByPage2(pager.getStart(), pager.getPageSize());
-	}
 
-	/**
-	 * 条件分页查询员工
-	 */
-	@Transactional(readOnly = true)
-	public List<Employee> queryEmpByCondition(Pager pager, Integer deptId, Integer jobId, String empName) {
-		return mapper.queryByCondition(pager.getStart(), pager.getPageSize(), deptId, jobId, empName);
+		return mapper.queryByPage2(pager.getStart(), pager.getPageSize());
 	}
 
 	/**
@@ -150,42 +146,51 @@ public class EmployeeService {
 	}
 
 	/**
-	 * 返回满足条件员工总记录数
-	 */
-	@Transactional(readOnly = true)
-	public int getEmpCountByCondition(Integer deptId, Integer jobId, String empName) {
-		return mapper.getCountByCondition(deptId, jobId, empName);
-	}
-
-	/**
-	 * 根据登录名查询员工
+	 * 根据登录名返回员工数据
 	 */
 	@Transactional(readOnly = true)
 	public Employee queryEmpByName(String empLoginName) {
+
 		return mapper.queryByName(empLoginName);
 	}
 
 	/**
-	 * 根据id查询员工
+	 * 根据id返回员工数据
 	 */
 	@Transactional(readOnly = true)
 	public Employee queryEmpById(Integer empId) {
+
 		return mapper.queryById(empId);
 	}
 
 	/**
-	 * 修改头像
+	 * 条件分页查询员工
+	 */
+	@Transactional(readOnly = true)
+	public List<Employee> queryEmpByCondition(Pager pager, Integer deptId, Integer jobId, String empName) {
+		return mapper.queryByCondition3(pager.getStart(), pager.getPageSize(), deptId, jobId, empName);
+	}
+
+	/**
+	 * 条件分页查询员工
+	 */
+	@Transactional(readOnly = true)
+	public int getCountByCondition(Integer deptId, Integer jobId, String empName) {
+		return mapper.getCountByCondition(deptId, jobId, empName);
+	}
+
+	/**
+	 * 更新员工头像
 	 */
 	public void updateEmpHead(String empLoginName, String empPhoto) {
 		mapper.updateHead(empLoginName, empPhoto);
 	}
 
 	/**
-	 * 查询返回头像
+	 * 返回员工头像
 	 */
 	@Transactional(readOnly = true)
 	public String queryEmpHead(String empLoginName) {
-
 		return mapper.queryHead(empLoginName);
 	}
 
@@ -194,15 +199,13 @@ public class EmployeeService {
 	 * 
 	 * @throws ParseException
 	 * @throws IOException
-	 * @throws InvalidTokenOffsetsException
+	 * @throws InvalidTokenOffsetsException 
 	 */
 	@Transactional(readOnly = true)
-	public List<Employee> queryEmpByIndex(String queryStr)
-			throws ParseException, IOException, InvalidTokenOffsetsException {
+	public List<Employee> queryEmpByIndex(String queryStr) throws ParseException, IOException, InvalidTokenOffsetsException {
 
 		// 设置常见停用词（的，么，啊，着之类的东东）
-		String[] self_stop_words = { "是", "的", "着", "啊", "么", "," };
-
+		String[] self_stop_words = { "的", "着", "啊", "么", "嘛" , "是" };
 		CharArraySet cas = new CharArraySet(Version.LUCENE_47, 0, true);
 		for (int i = 0; i < self_stop_words.length; i++) {
 			cas.add(self_stop_words[i]);
@@ -214,16 +217,30 @@ public class EmployeeService {
 			cas.add(itor.next());
 		}
 
-		// 中文分词器
+		// 中文分词器（设置停用词）
 		Analyzer analyzer = new SmartChineseAnalyzer(Version.LUCENE_47,cas);
 
 		// 创建查询解析器对象，多字段搜索
 		QueryParser queryParser = new MultiFieldQueryParser(Version.LUCENE_47,
 				new String[] { "empId", "empName", "empPhone", "empInfo" }, analyzer);
+
 		// 创建查询对象
 		Query query = queryParser.parse(queryStr);
 
-		return indexDao.query(query);
-	}
+		// 调用索引dao
+		List<Employee> list = indexDao.search(query);
 
+		return list;
+	}
+	
+	/**
+	 * 员工生日祝福提醒
+	 */
+	public void happyBirthday() {
+		
+		//调用数据库查询出今天生日的员工，发送祝福信息
+		
+		System.out.println("发送员工生日祝福" + new Date());		
+	}
+	
 }

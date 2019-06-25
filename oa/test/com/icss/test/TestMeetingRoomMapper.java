@@ -43,7 +43,7 @@ public class TestMeetingRoomMapper {
 		
 		@Test
 		public void testQueryById() {		
-			MeetingRoom room = mapper.queryById(1);
+			MeetingRoom room = mapper.queryById(3);
 			System.out.println(room);		
 		}
 		
@@ -83,4 +83,5 @@ public class TestMeetingRoomMapper {
 			System.out.println(count);
 			
 		}
+
 }

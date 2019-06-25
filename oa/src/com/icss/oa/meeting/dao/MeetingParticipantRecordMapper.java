@@ -9,17 +9,17 @@ import com.icss.oa.meeting.pojo.MeetingParticipantRecord;
 import com.icss.oa.system.pojo.Employee;
 
 
-public interface MeetingParticipantRecordMapping {
+public interface MeetingParticipantRecordMapper {
 
 	void insert(MeetingParticipantRecord rec);
 	
 	void delete(MeetingParticipantRecord rec);
 	
-//	List<Employee> queryByMeeId(Integer meeId);
-//	
-//	List<MeetingParticipantRecord> queryByEmp(Employee emp);
-//	
+	List<Employee> queryByMeeId(Integer meeId);
 	
+	List<Meeting> queryByEmpId(Integer empId);
 	
-
+	Integer getCountByMeeId(Integer meeId);
+	
+	List<Meeting> queryMeeByParId(Integer empId);
 }

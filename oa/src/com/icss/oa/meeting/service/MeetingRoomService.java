@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.icss.oa.common.Pager;
+import com.icss.oa.meeting.dao.MeetingMapper;
 import com.icss.oa.meeting.dao.MeetingRoomMapper;
+import com.icss.oa.meeting.pojo.Meeting;
 import com.icss.oa.meeting.pojo.MeetingRoom;
 import com.icss.oa.system.pojo.Department;
 
@@ -18,6 +20,8 @@ public class MeetingRoomService {
 	@Autowired
 	private MeetingRoomMapper mapper;
 	
+	@Autowired
+	private MeetingMapper meetingMapper;
 
 	/**
 	 *增加会议
@@ -67,5 +71,20 @@ public class MeetingRoomService {
 	public MeetingRoom queryRoomById(Integer roomId) {
 		return mapper.queryById(roomId);
 	}
+	
+	@Transactional(readOnly=true)
+	public Integer getSize(Integer roomId){
+		MeetingRoom room=mapper.queryById(roomId);
+		return room.getRoomSize();
+	}
 
+	@Transactional(readOnly=true)
+	public List<Meeting> queryMeeByRoomId(Integer roomId){
+		return meetingMapper.queryMeeByRoomId(roomId);
+	}
+	
+	@Transactional(readOnly=true)
+	public Meeting lastMeeByRoom(Integer roomId){
+		return meetingMapper.lastMeeByRoom(roomId, "审批通过");
+	}
 }

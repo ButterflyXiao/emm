@@ -26,7 +26,7 @@ public interface EmployeeMapper {
 	
 	int getCount();
 	
-	Employee queryById(Integer empId);
+	Employee queryById(Integer employeeId);
 	
 	Employee queryByName(String empLoginName);
 	
@@ -36,14 +36,14 @@ public interface EmployeeMapper {
 	
 	List<Employee> queryByCondition3(@Param("start") Integer start,@Param("pageSize") Integer pageSize,@Param("deptId") Integer deptId,@Param("jobId") Integer jobId,@Param("empName") String empName);
 	
-	int getCountByCondition(@Param("deptId") Integer deptId,@Param("jobId") Integer jobId,@Param("empName") String empName);
+	int getCountByCondition(@Param("deptId") Integer deptId,@Param("jobId") Integer jobId,@Param("empName") String empName); 
 	
 	List<Employee> queryByIds(@Param("ids") Integer[] ids);
 	
 	void updateHead(@Param("empLoginName")String empLoginName,@Param("empPhoto")String empPhoto);
 	
-	String queryHead(@Param("empLoginName")String empLoginName);
+	String queryHead(@Param("empLoginName") String empLoginName);
 	
 	int getLastInsertId();
-
+	
 }

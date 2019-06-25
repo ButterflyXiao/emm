@@ -18,89 +18,100 @@ import com.icss.oa.system.pojo.Employee;
 import com.icss.oa.system.service.EmployeeService;
 
 /**
- * 员工业务测试类
  * 
  * @author Administrator
  *
  */
 public class TestEmployeeService {
-
-	// 创建Spring容器核心对象
+	
+	//获得Spring核心容器对象
 	ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-
-	// 获得service对象
+	
+	//获得Service对象
 	EmployeeService service = context.getBean(EmployeeService.class);
-	//获得索引dao对象
+	
 	EmpIndexDao indexDao = context.getBean(EmpIndexDao.class);
-
+	
 	@Test
-	public void testCheckLogin() {
-		int result = service.checkLogin("zhangsan", "123456");
-		System.out.println(result);
-	}
-
+	public void testCheckLogin() {		
+		int result = service.checkLogin("zhangsan2", "123456");
+		System.out.println(result);		
+	}	
+	
 	@Test
-	public void testQueryEmpByPage() {
-
-		Pager pager = new Pager(service.getEmpCount(), 7, 1);
-
+	public void testQueryEmpByPage() {		
+		
+		Pager pager = new Pager(service.getEmpCount(), 7,2);
 		List<Employee> list = service.queryEmpByPage(pager);
-
+		
 		for (Employee emp : list) {
 			System.out.println(emp);
 		}
-
+		
 	}
-
-	/**
-	 * 重建索引
-	 */
+	
 	@Test
-	public void testCreateIndex() {
-
-		Pager pager = new Pager(service.getEmpCount(), service.getEmpCount(), 1);
-
-		List<Employee> list = service.queryEmpByPage(pager);
-
+	public void testQueryEmpByCondition() {		
+		
+		Pager pager = new Pager(service.getEmpCount(), 7,1);
+		List<Employee> list = service.queryEmpByCondition(pager, 5, 9, "李");
+		
 		for (Employee emp : list) {
 			System.out.println(emp);
+		}
+		
+	}
+	
+	/**
+	 * 重建员工的索引
+	 */
+	@Test
+	public void testCreateIndex(){
+		
+		Pager pager = new Pager(service.getEmpCount(),service.getEmpCount() ,1);
+		List<Employee> list = service.queryEmpByPage(pager);
+		
+		for (Employee emp : list) {
+						
+			System.out.println(emp);
 			
-			// 索引
-			try {				
-
+			try {
+				/********** 生成索引 *************/
 				// 创建索引文档
 				Document document = new Document();
-
-				document.add(new TextField("empId", String.valueOf(emp.getEmpId()), Store.YES));
+				document.add(new TextField("empId", String.valueOf(emp.getEmpId())  , Store.YES));
 				document.add(new TextField("empName", emp.getEmpName(), Store.YES));
 				document.add(new TextField("empPhone", emp.getEmpPhone(), Store.YES));
 				document.add(new TextField("empInfo", emp.getEmpInfo(), Store.YES));
 
 				// 调用索引dao
 				indexDao.create(document);
+				
 				System.out.println("索引已创建");
-			} catch (Exception e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-
+			
+		}	
+		
 	}
 	
+	
 	/**
-	 * 全文检索测试
+	 * 测试全文检索
 	 * @throws IOException 
 	 * @throws ParseException 
 	 * @throws InvalidTokenOffsetsException 
 	 */
 	@Test
-	public void testQueryEmpByIndex() throws ParseException, IOException, InvalidTokenOffsetsException {		
-
-		List<Employee> list = service.queryEmpByIndex("13912345678");
-
+	public void testQueryByIndex() throws ParseException, IOException, InvalidTokenOffsetsException {
+		
+		List<Employee> list = service.queryEmpByIndex("13812345678");
+		
 		for (Employee emp : list) {
 			System.out.println(emp);
-		}
-
-	}	
+		}	
+		
+	}
 
 }

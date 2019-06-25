@@ -2,64 +2,78 @@ package com.icss.oa.system.pojo;
 
 import java.sql.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 /**
  * 员工实体类
  * @author Administrator
  *
  */
 public class Employee {
-	
+
 	private Integer empId;
-	
+
 	private String empName;
-	
+
 	private String empLoginName;
-	
+
 	private String empPwd;
-	
+
 	private String empSex;
-	
-//	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-	private Date empBirthdate;
-	
+
+	private Date empBirthday;
+
 	private String empPhone;
-	
-	private String empEmail;
-	
+
 	private Integer empSal;
-	
+
+	private String empEmail;
+
 	private String empInfo;
-	
-	private Department dept; //多对一
-	
-	private Job job;//多对一
-	
+
+	private Department dept;
+
+	private Job job;
+
 	private String empPhoto;
 
 	public Employee() {
 		super();
 	}
-	
-	public Employee(String empName, String empLoginName, String empPwd, String empSex, Date empBirthdate,
-			String empPhone, String empEmail, Integer empSal, String empInfo, Department dept, Job job) {
+
+	public Employee(String empName, String empLoginName, String empPwd, String empSex, Date empBirthday,
+			String empPhone, Integer empSal, String empEmail, String empInfo, Department dept, Job job) {
 		super();
 		this.empName = empName;
 		this.empLoginName = empLoginName;
 		this.empPwd = empPwd;
 		this.empSex = empSex;
-		this.empBirthdate = empBirthdate;
+		this.empBirthday = empBirthday;
 		this.empPhone = empPhone;
-		this.empEmail = empEmail;
 		this.empSal = empSal;
+		this.empEmail = empEmail;
 		this.empInfo = empInfo;
 		this.dept = dept;
 		this.job = job;
 	}
 
-	public Employee(Integer empId, String empName, String empLoginName, String empPwd, String empSex, Date empBirthdate,
-			String empPhone, String empEmail, Integer empSal, String empInfo, Department dept, Job job,
+	public Employee(Integer empId, String empName, String empLoginName, String empPwd, String empSex, Date empBirthday,
+			String empPhone, Integer empSal, String empEmail, String empInfo, Department dept, Job job) {
+		super();
+		this.empId = empId;
+		this.empName = empName;
+		this.empLoginName = empLoginName;
+		this.empPwd = empPwd;
+		this.empSex = empSex;
+		this.empBirthday = empBirthday;
+		this.empPhone = empPhone;
+		this.empSal = empSal;
+		this.empEmail = empEmail;
+		this.empInfo = empInfo;
+		this.dept = dept;
+		this.job = job;
+	}
+
+	public Employee(Integer empId, String empName, String empLoginName, String empPwd, String empSex, Date empBirthday,
+			String empPhone, Integer empSal, String empEmail, String empInfo, Department dept, Job job,
 			String empPhoto) {
 		super();
 		this.empId = empId;
@@ -67,10 +81,10 @@ public class Employee {
 		this.empLoginName = empLoginName;
 		this.empPwd = empPwd;
 		this.empSex = empSex;
-		this.empBirthdate = empBirthdate;
+		this.empBirthday = empBirthday;
 		this.empPhone = empPhone;
-		this.empEmail = empEmail;
 		this.empSal = empSal;
+		this.empEmail = empEmail;
 		this.empInfo = empInfo;
 		this.dept = dept;
 		this.job = job;
@@ -117,12 +131,12 @@ public class Employee {
 		this.empSex = empSex;
 	}
 
-	public Date getEmpBirthdate() {
-		return empBirthdate;
+	public Date getEmpBirthday() {
+		return empBirthday;
 	}
 
-	public void setEmpBirthdate(Date empBirthdate) {
-		this.empBirthdate = empBirthdate;
+	public void setEmpBirthday(Date empBirthday) {
+		this.empBirthday = empBirthday;
 	}
 
 	public String getEmpPhone() {
@@ -133,20 +147,20 @@ public class Employee {
 		this.empPhone = empPhone;
 	}
 
-	public String getEmpEmail() {
-		return empEmail;
-	}
-
-	public void setEmpEmail(String empEmail) {
-		this.empEmail = empEmail;
-	}
-
 	public Integer getEmpSal() {
 		return empSal;
 	}
 
 	public void setEmpSal(Integer empSal) {
 		this.empSal = empSal;
+	}
+
+	public String getEmpEmail() {
+		return empEmail;
+	}
+
+	public void setEmpEmail(String empEmail) {
+		this.empEmail = empEmail;
 	}
 
 	public String getEmpInfo() {
@@ -184,9 +198,9 @@ public class Employee {
 	@Override
 	public String toString() {
 		return "Employee [empId=" + empId + ", empName=" + empName + ", empLoginName=" + empLoginName + ", empPwd="
-				+ empPwd + ", empSex=" + empSex + ", empBirthdate=" + empBirthdate + ", empPhone=" + empPhone
-				+ ", empEmail=" + empEmail + ", empSal=" + empSal + ", empInfo=" + empInfo + ", dept=" + dept + ", job="
-				+ job + "]";
+				+ empPwd + ", empSex=" + empSex + ", empBirthday=" + empBirthday + ", empPhone=" + empPhone
+				+ ", empSal=" + empSal + ", empEmail=" + empEmail + ", empInfo=" + empInfo + ", dept=" + dept + ", job="
+				+ job + ", empPhoto=" + empPhoto + "]";
 	}
-	
+
 }

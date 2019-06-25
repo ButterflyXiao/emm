@@ -9,17 +9,19 @@
 		<result column="mee_content" property="meeContent" jdbcType="VARCHAR" />
 		<result column="mee_start_time" property="meeStartTime" jdbcType="TIMESTAMP" />
 		<result column="mee_duration" property="meeDuration" jdbcType="INTEGER" />	
-		
+		<result column="mee_record_name" property="meeRecordName" jdbcType="VARCHAR" />
+		<result column="mee_par" property="meePar" jdbcType="INTEGER" />
+
 		
 		<association property="meeRoom" javaType="com.icss.oa.meeting.pojo.MeetingRoom">
 			<id column="room_id" property="roomId" jdbcType="INTEGER" />
 			<result column="room_place" property="roomPlace" jdbcType="VARCHAR" />
 			<result column="is_reservation" property="isReservation" jdbcType="TINYINT" />
+			<result column="room_size" property="roomSize" jdbcType="INTEGER" />
 		</association>
 		<association property="meeSponsor" javaType="com.icss.oa.system.pojo.Employee">
 			<id column="emp_id" property="empId" jdbcType="INTEGER" />
 			<result column="emp_name" property="empName" jdbcType="VARCHAR" />
-			
 		</association>
 	</resultMap>
 	<resultMap id="ResultMapWithBLOBs" type="com.icss.oa.meeting.pojo.Meeting"
@@ -29,14 +31,28 @@
 
 	<insert id="insert" parameterType="com.icss.oa.meeting.pojo.Meeting">
 		insert into meeting values
-		(default,#{meeRoom.roomId,jdbcType=INTEGER},#{meeSponsor.empId,jdbcType=INTEGER},default,#{meeTopic,jdbcType=VARCHAR},#{meeContent,jdbcType=VARCHAR},
-		default,#{meeStartTime,jdbcType=TIMESTAMP},#{meeDuration,jdbcType=INTEGER})
+		(default,#{meeRoom.roomId,jdbcType=INTEGER},#{meeSponsor.empId,jdbcType=INTEGER},default,#{meeTopic,jdbcType=VARCHAR},#{meeContent,jdbcType=VARCHAR},null
+		,#{meeStartTime,jdbcType=TIMESTAMP},#{meeDuration,jdbcType=INTEGER},default,default)
 	</insert>
 
+	
 	<update id="update" parameterType="com.icss.oa.meeting.pojo.Meeting">
 		update meeting set
 		mee_room_id=#{meeRoom.roomId},mee_sponsor_id=#{meeSponsor.empId},mee_approval_status=#{meeApprovalStatus},
-		mee_topic=#{meeTopic},mee_content=#{meeContent},mee_record=#{meeRecord,jdbcType=LONGVARBINARY},mee_start_time=#{meeStartTime},mee_duration=#{meeDuration}
+		mee_topic=#{meeTopic},mee_content=#{meeContent},mee_record=#{meeRecord,jdbcType=LONGVARBINARY},
+		mee_start_time=#{meeStartTime},mee_duration=#{meeDuration},mee_record_name=#{meeRecordName}
+		where mee_id=#{meeId}
+	</update>
+	
+	<update id="setApproval" parameterType="com.icss.oa.meeting.pojo.Meeting">
+		update meeting set
+		mee_approval_status=#{meeApprovalStatus}
+		where mee_id=#{meeId}
+	</update>
+	
+	<update id="updatePar" >
+		update meeting set
+		mee_par=#{meePar}
 		where mee_id=#{meeId}
 	</update>
 
@@ -46,13 +62,13 @@
 	</delete>
 	
 
-	<select id="queryById" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+	<select id="queryById" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
 		SELECT m.*,m.`mee_room_id` room_id,m.`mee_sponsor_id` emp_id 
 		from meeting m
 		where mee_id=#{meeId}
 	</select>
 	
-	<select id="query" resultMap="BaseResultMap">
+	<select id="query" resultMap="ResultMapWithBLOBs">
 		SELECT m.*,m.`mee_room_id` room_id,m.`mee_sponsor_id` emp_id 
 		from meeting m
 		order by mee_id
@@ -62,25 +78,25 @@
 		select count(*) from meeting
 	</select>
 	
-	<select id="queryByPage" resultMap="BaseResultMap">
-		SELECT m.*,r.`room_place`,e.`emp_name`
+	<select id="queryByPage" resultMap="ResultMapWithBLOBs">
+		SELECT m.*,r.`room_place`,r.`room_size`,e.`emp_name`
 		from meeting m
-		JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
-		JOIN employee e ON m.`mee_sponsor_id`=e.`emp_id` 
+		LEFT OUTER JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
+		LEFT OUTER JOIN employee e ON m.`mee_sponsor_id`=e.`emp_id` 
 		LIMIT #{start},#{pageSize}
 	</select>
 	
-	<select id="queryByTopic" resultMap="BaseResultMap" parameterType="java.lang.String">
+	<select id="queryByTopic" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
 		select  *
 		from	meeting
 		where	mee_topic=#{meeTopic}
 	</select>
 	
-	<select id="queryByCondition" resultMap="BaseResultMap">
-		SELECT m.*,r.`room_place`,e.`emp_name`
+	<select id="queryByCondition" resultMap="ResultMapWithBLOBs">
+		SELECT m.*,r.`room_place`,r.`room_size`,e.`emp_name`
 		from meeting m
-		JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
-		JOIN employee e ON m.`mee_sponsor_id`=e.`emp_id` 
+		LEFT OUTER JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
+		LEFT OUTER JOIN employee e ON m.`mee_sponsor_id`=e.`emp_id` 
 		<where>
 			<if test="roomId != null">
 				and mee_room_id=#{roomId,jdbcType=INTEGER}
@@ -89,6 +105,7 @@
 			<if test="meeTopic != null and meeTopic != '' ">
 				and mee_topic  like concat('%',#{meeTopic,jdbcType=VARCHAR},'%')
 			</if>
+						
 			<if test="meeApprovalStatus != null and meeApprovalStatus != '' ">
 				and mee_approval_status=#{meeApprovalStatus,jdbcType=VARCHAR}
 			</if>
@@ -113,4 +130,40 @@
 
 		</where>
 	</select>
+	
+	<!-- 返回当前新插入数据的自动编号 -->
+	<select id="getLastInsertId" resultType="java.lang.Integer">
+		SELECT LAST_INSERT_ID()
+	</select>
+	
+	<select id="queryMeeByRoomId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select m.*,r.*,e.*
+		from meeting m
+		LEFT OUTER JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
+		LEFT OUTER JOIN employee e ON m.`mee_sponsor_id`=e.`emp_id` 
+		where  room_id=#{roomId}
+		order by m.`mee_start_time` desc
+	</select>
+	
+	<select id="queryMeeBySponsorId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select m.*,r.*
+		from meeting m
+		LEFT OUTER JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
+		LEFT OUTER JOIN employee e ON m.`mee_sponsor_id`=e.`emp_id` 
+		where  mee_sponsor_id=#{meeSponsor.empId}
+		order by m.`mee_start_time` desc
+	</select>
+	
+	
+	<select id="lastMeeByRoom" resultMap="BaseResultMap">
+		 select m.*,r.*,e.*
+		from meeting m
+		LEFT OUTER JOIN meeting_room r ON m.`mee_room_id`=r.`room_id`
+		LEFT OUTER JOIN employee e ON m.`mee_sponsor_id`=e.`emp_id` 
+		 where room_id=#{roomId} and m.`mee_approval_status`=#{meeApprovalStatus} and m.`mee_start_time`> now()
+		 order by m.`mee_start_time`
+		 desc limit 1
+	</select>
+	
+
 </mapper>
